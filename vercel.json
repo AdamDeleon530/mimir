@@ -1,0 +1,8 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nuxtjs",
+  "buildCommand": "nuxt build",
+  "outputDirectory": ".vercel/output",
+  "installCommand": "pnpm install",
+  "regions": ["iad1"]
+}

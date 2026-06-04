@@ -1,0 +1,28 @@
+# Nuxt
+.nuxt
+.output
+.data
+dist
+
+# Node
+node_modules
+.npm
+.pnpm-store
+*.log
+
+# Env
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Editor
+.vscode
+.idea
+.DS_Store
+
+# Vercel
+.vercel
+
+# OS
+Thumbs.db
