@@ -5,6 +5,61 @@
 // is unreliable (network errors on localhost, region-blocked, rate-limited). Scribe
 // uses the same ElevenLabs key as TTS, so no new account.
 
+// =====================================================================
+// Strip markdown before TTS so asterisks, backticks, hashes, list
+// markers, link syntax, and tables don't get read aloud. Visual UI
+// keeps the markdown — only the spoken version is sanitized.
+// =====================================================================
+export function stripMarkdownForSpeech(input: string): string {
+  let s = input
+
+  // Fenced code blocks — drop entirely (don't speak code)
+  s = s.replace(/```[\s\S]*?```/g, ' ')
+  // Inline code — keep the contents, drop the backticks
+  s = s.replace(/`([^`]+)`/g, '$1')
+
+  // Images ![alt](url) — keep alt only
+  s = s.replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1')
+  // Links [text](url) — keep text only
+  s = s.replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+
+  // Bold/italic (** __ * _) — keep contents
+  s = s.replace(/\*\*\*([^*]+)\*\*\*/g, '$1')
+  s = s.replace(/___([^_]+)___/g, '$1')
+  s = s.replace(/\*\*([^*]+)\*\*/g, '$1')
+  s = s.replace(/__([^_]+)__/g, '$1')
+  s = s.replace(/(^|\s)\*([^*\n]+)\*/g, '$1$2')
+  s = s.replace(/(^|\s)_([^_\n]+)_/g, '$1$2')
+  // Strikethrough
+  s = s.replace(/~~([^~]+)~~/g, '$1')
+
+  // Headers — drop the # markers, keep text
+  s = s.replace(/^\s{0,3}#{1,6}\s+/gm, '')
+
+  // Blockquote markers
+  s = s.replace(/^\s{0,3}>\s?/gm, '')
+
+  // Bullet markers (-, *, +) at line start
+  s = s.replace(/^\s*[-*+]\s+/gm, '')
+  // Numbered list markers
+  s = s.replace(/^\s*\d+\.\s+/gm, '')
+
+  // Tables — strip leading/trailing pipes, separator rows, and inner pipes
+  s = s.replace(/^\s*\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)+\|?\s*$/gm, '') // separator row
+  s = s.replace(/\|/g, ' ') // remaining pipes become spaces
+
+  // Horizontal rules
+  s = s.replace(/^\s*[-*_]{3,}\s*$/gm, '. ')
+
+  // HTML tags (just in case)
+  s = s.replace(/<[^>]+>/g, ' ')
+
+  // Collapse whitespace
+  s = s.replace(/\n{2,}/g, '. ').replace(/\n/g, ' ').replace(/\s{2,}/g, ' ').trim()
+
+  return s
+}
+
 export function useVoice() {
   const listening = ref(false)        // user is currently recording
   const transcribing = ref(false)     // we have audio, waiting for Scribe
@@ -139,12 +194,15 @@ export function useVoice() {
   }
 
   async function speak(text: string): Promise<void> {
-    if (!text.trim()) return
+    // Strip markdown FIRST — what the UI shows is the rich version,
+    // what TTS speaks is the clean version. Single source of truth.
+    const cleanText = stripMarkdownForSpeech(text)
+    if (!cleanText.trim()) return
     speaking.value = true
 
     // Browser mode: skip ElevenLabs entirely. Instant, free, local.
     if (voiceModePref.value === 'browser') {
-      speakBrowser(text)
+      speakBrowser(cleanText)
       return
     }
 
@@ -153,7 +211,7 @@ export function useVoice() {
       const res = await fetch('/api/speak', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text }),
+        body: JSON.stringify({ text: cleanText }),
       })
       if (res.ok && res.headers.get('content-type')?.startsWith('audio/')) {
         const blob = await res.blob()
@@ -167,10 +225,10 @@ export function useVoice() {
         }
         await audio.play()
       } else {
-        speakBrowser(text)
+        speakBrowser(cleanText)
       }
     } catch {
-      speakBrowser(text)
+      speakBrowser(cleanText)
     }
   }
 

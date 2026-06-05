@@ -26,9 +26,22 @@ export default defineNuxtConfig({
     // server-only secrets — never exposed to client
     anthropicApiKey: '',
     elevenlabsApiKey: '',
-    elevenlabsVoiceId: 'nPczCjzI2devNBz1zQrb', // default: "Brian" — calm, considered. Override via env.
-    elevenlabsModelId: 'eleven_flash_v2_5', // ~75ms latency. English-focused. Swap to eleven_multilingual_v2 if quality matters more than speed, or eleven_turbo_v2_5 for the middle ground.
+    elevenlabsVoiceId: 'nPczCjzI2devNBz1zQrb',
+    elevenlabsModelId: 'eleven_flash_v2_5',
     appPassword: '',
+    // Lead-gen pipeline
+    apifyApiToken: '',
+    hunterApiKey: '',
+    millionverifierApiKey: '',
+    instantlyApiKey: '',
+    hubspotApiKey: '',
+    stripeSecretKey: '',
+    // Local sequence sender
+    physicalAddress: '',
+    cronSecret: '',
+    // Code-change pipeline (GitHub PR opener)
+    githubToken: '',
+    githubOwner: 'AdamDeLeon530',
     public: {
       // client-safe config
       voiceFallback: 'browser', // 'browser' | 'none'
