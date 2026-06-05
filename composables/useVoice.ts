@@ -1,61 +1,154 @@
-// Voice in (Web Speech API) + voice out (ElevenLabs primary, browser SpeechSynthesis fallback).
-// Server route /api/speak returns an MP3 from ElevenLabs; if it 503s (no API key) we fall back here.
+// Voice in: MediaRecorder → ElevenLabs Scribe (via /api/transcribe)
+// Voice out: ElevenLabs TTS (via /api/speak) with browser SpeechSynthesis fallback
+//
+// We use MediaRecorder + a server STT roundtrip because Chrome's free Web Speech API
+// is unreliable (network errors on localhost, region-blocked, rate-limited). Scribe
+// uses the same ElevenLabs key as TTS, so no new account.
 
 export function useVoice() {
-  const listening = ref(false)
+  const listening = ref(false)        // user is currently recording
+  const transcribing = ref(false)     // we have audio, waiting for Scribe
   const speaking = ref(false)
-  const transcript = ref('')
+  const transcript = ref('')          // final transcript after Scribe returns
+  const voiceError = ref('')
 
-  const SpeechRecognition = typeof window !== 'undefined'
-    ? (window.SpeechRecognition ?? window.webkitSpeechRecognition)
-    : null
-
-  const isVoiceAvailable = computed(() => !!SpeechRecognition)
-
-  let recognition: SpeechRecognition | null = null
+  let mediaRecorder: MediaRecorder | null = null
+  let mediaStream: MediaStream | null = null
+  let recordedChunks: Blob[] = []
   let currentAudio: HTMLAudioElement | null = null
 
-  function ensureRecognition(): SpeechRecognition | null {
-    if (!SpeechRecognition) return null
-    if (recognition) return recognition
-    const r: SpeechRecognition = new SpeechRecognition()
-    r.lang = 'en-US'
-    r.interimResults = false
-    r.continuous = false
-    r.maxAlternatives = 1
-    r.onresult = (event) => {
-      const last = event.results[event.results.length - 1]
-      if (last) {
-        const alt = last[0]
-        if (alt) transcript.value = alt.transcript
-      }
-    }
-    r.onend = () => { listening.value = false }
-    r.onerror = () => { listening.value = false }
-    recognition = r
-    return r
-  }
+  const isVoiceAvailable = computed(() => {
+    if (typeof window === 'undefined') return false
+    return !!(navigator.mediaDevices?.getUserMedia && typeof MediaRecorder !== 'undefined')
+  })
 
-  function startListening(): void {
-    const r = ensureRecognition()
-    if (!r) return
-    transcript.value = ''
-    try {
-      r.start()
-      listening.value = true
-    } catch {
-      // already running; ignore
+  async function startListening(): Promise<void> {
+    if (!isVoiceAvailable.value) {
+      voiceError.value = 'voice input not supported in this browser. try Chrome, Safari, or Edge.'
+      return
     }
+    voiceError.value = ''
+    transcript.value = ''
+    recordedChunks = []
+
+    try {
+      mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true })
+    } catch (err) {
+      const name = err instanceof Error ? err.name : ''
+      if (name === 'NotAllowedError' || name === 'PermissionDeniedError') {
+        voiceError.value = 'mic permission denied. enable in browser settings (lock icon → Site settings → Microphone → Allow), then reload.'
+      } else if (name === 'NotFoundError') {
+        voiceError.value = 'no microphone found on this device.'
+      } else {
+        voiceError.value = `mic access failed: ${name || 'unknown'}`
+      }
+      return
+    }
+
+    // Choose the best codec the browser supports for Scribe
+    const mimeType = pickMimeType()
+    try {
+      mediaRecorder = new MediaRecorder(mediaStream, mimeType ? { mimeType } : undefined)
+    } catch (err) {
+      voiceError.value = 'browser cannot record audio with a supported codec.'
+      stopStream()
+      return
+    }
+
+    mediaRecorder.ondataavailable = (e: BlobEvent) => {
+      if (e.data && e.data.size > 0) recordedChunks.push(e.data)
+    }
+
+    mediaRecorder.onstop = async () => {
+      stopStream()
+      listening.value = false
+      if (!recordedChunks.length) return
+      await transcribeAndExpose()
+    }
+
+    mediaRecorder.start()
+    listening.value = true
   }
 
   function stopListening(): void {
-    recognition?.stop()
-    listening.value = false
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+      mediaRecorder.stop()  // onstop handler completes the rest
+    }
+  }
+
+  async function transcribeAndExpose(): Promise<void> {
+    transcribing.value = true
+    try {
+      const mime = recordedChunks[0]?.type || 'audio/webm'
+      const blob = new Blob(recordedChunks, { type: mime })
+      const form = new FormData()
+      form.append('audio', blob, `recording.${extFor(mime)}`)
+      const res = await $fetch<{ text: string }>('/api/transcribe', {
+        method: 'POST',
+        body: form,
+      })
+      transcript.value = res.text ?? ''
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'unknown error'
+      voiceError.value = `transcription failed: ${msg}`
+    } finally {
+      transcribing.value = false
+    }
+  }
+
+  function stopStream(): void {
+    mediaStream?.getTracks().forEach(t => t.stop())
+    mediaStream = null
+  }
+
+  function pickMimeType(): string | undefined {
+    if (typeof MediaRecorder === 'undefined') return undefined
+    const candidates = [
+      'audio/webm;codecs=opus',
+      'audio/webm',
+      'audio/mp4;codecs=mp4a.40.2',  // Safari
+      'audio/mp4',
+      'audio/ogg;codecs=opus',
+    ]
+    for (const c of candidates) {
+      if (MediaRecorder.isTypeSupported(c)) return c
+    }
+    return undefined
+  }
+
+  function extFor(mime: string): string {
+    if (mime.includes('webm')) return 'webm'
+    if (mime.includes('mp4')) return 'm4a'
+    if (mime.includes('ogg')) return 'ogg'
+    return 'webm'
+  }
+
+  // ----- Voice out (TTS) — unchanged -----
+
+  // Voice mode preference, persisted in localStorage. Default = 'browser' (fast + free).
+  // Flip to 'elevenlabs' if you want richer voice quality at the cost of latency + credits.
+  const voiceModePref = ref<'browser' | 'elevenlabs'>('browser')
+  if (typeof window !== 'undefined') {
+    const saved = window.localStorage?.getItem('mimir-voice-mode')
+    if (saved === 'browser' || saved === 'elevenlabs') voiceModePref.value = saved
+  }
+
+  function setVoiceMode(mode: 'browser' | 'elevenlabs'): void {
+    voiceModePref.value = mode
+    if (typeof window !== 'undefined') window.localStorage?.setItem('mimir-voice-mode', mode)
   }
 
   async function speak(text: string): Promise<void> {
     if (!text.trim()) return
     speaking.value = true
+
+    // Browser mode: skip ElevenLabs entirely. Instant, free, local.
+    if (voiceModePref.value === 'browser') {
+      speakBrowser(text)
+      return
+    }
+
+    // ElevenLabs path with browser fallback on failure
     try {
       const res = await fetch('/api/speak', {
         method: 'POST',
@@ -74,7 +167,6 @@ export function useVoice() {
         }
         await audio.play()
       } else {
-        // Fallback: browser SpeechSynthesis
         speakBrowser(text)
       }
     } catch {
@@ -88,14 +180,47 @@ export function useVoice() {
       return
     }
     const u = new SpeechSynthesisUtterance(text)
-    u.rate = 1.0
+    u.rate = 1.05
     u.pitch = 0.95
-    // Prefer a deeper / British / calm voice if available
+
+    // Voice picker — prefer high-quality macOS / Edge neural voices in priority order.
+    // These run locally with ~0ms latency.
     const voices = window.speechSynthesis.getVoices()
-    const preferred = voices.find(v => /daniel|google uk english male|microsoft george|alex/i.test(v.name))
-    if (preferred) u.voice = preferred
+    const preferenceOrder = [
+      // macOS premium voices (best quality, usually need to be downloaded once via System Preferences → Accessibility → Spoken Content)
+      /^Daniel \(Premium\)/i,    // British male, very rich
+      /^Daniel \(Enhanced\)/i,
+      /^Alex$/i,                  // Apple's old flagship US male voice
+      /^Samantha \(Premium\)/i,   // US female, very rich
+      /^Samantha \(Enhanced\)/i,
+      // Standard macOS / iOS voices
+      /^Daniel$/i,                // British male
+      /^Karen$/i,                 // Australian female
+      /^Moira$/i,                 // Irish female
+      /^Samantha$/i,              // US female
+      // Microsoft Edge neural voices (Windows / Edge browser)
+      /Microsoft Guy Online \(Natural\)/i,
+      /Microsoft Davis Online \(Natural\)/i,
+      /Microsoft Aria Online \(Natural\)/i,
+      // Google Chrome voices
+      /Google UK English Male/i,
+      /Google US English/i,
+    ]
+    let chosen: SpeechSynthesisVoice | undefined
+    for (const pattern of preferenceOrder) {
+      chosen = voices.find(v => pattern.test(v.name))
+      if (chosen) break
+    }
+    if (chosen) u.voice = chosen
+
     u.onend = () => { speaking.value = false }
+    u.onerror = () => { speaking.value = false }
     window.speechSynthesis.speak(u)
+  }
+
+  function listAvailableVoices(): SpeechSynthesisVoice[] {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return []
+    return window.speechSynthesis.getVoices().filter(v => v.lang.startsWith('en'))
   }
 
   function stopSpeaking(): void {
@@ -108,12 +233,18 @@ export function useVoice() {
 
   return {
     listening,
+    transcribing,
     speaking,
     transcript,
+    voiceError,
     isVoiceAvailable,
     startListening,
     stopListening,
     speak,
     stopSpeaking,
+    // Voice mode picker
+    voiceModePref,
+    setVoiceMode,
+    listAvailableVoices,
   }
 }

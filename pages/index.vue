@@ -11,7 +11,7 @@ async function submit() {
   try {
     await $fetch('/api/auth', { method: 'POST', body: { password: password.value } })
     await router.push('/dashboard')
-  } catch (e) {
+  } catch {
     error.value = 'wrong password'
   } finally {
     loading.value = false

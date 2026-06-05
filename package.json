@@ -10,12 +10,14 @@
   },
   "scripts": {
     "preinstall": "npx only-allow pnpm",
+    "prebuild": "pnpm sync-ops || echo 'sync-ops failed (likely running on CI without local ops library) — continuing with existing snapshot'",
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "typecheck": "nuxt typecheck"
+    "typecheck": "nuxt typecheck",
+    "sync-ops": "tsx scripts/sync-ops-context.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.1",
@@ -26,6 +28,7 @@
   },
   "devDependencies": {
     "@types/dom-speech-recognition": "^0.0.4",
+    "tsx": "^4.19.2",
     "typescript": "^5.6.3"
   }
 }

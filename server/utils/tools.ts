@@ -1,83 +1,88 @@
 import type Anthropic from '@anthropic-ai/sdk'
+import { searchOpsLibrary, getOpsFile, listOpsFolder, opsSyncStatus } from './ops-context'
 
 // =====================================================================
 // Tool DEFINITIONS — Claude sees these and decides when to call them.
-// Anthropic tool schema: https://docs.anthropic.com/en/docs/tool-use
 // =====================================================================
 
 export const MIMIR_TOOLS: Anthropic.Tool[] = [
+  // ---- OPS LIBRARY (read everything Adam has documented) ----
   {
-    name: 'get_pipeline_summary',
-    description: "Returns the current state of the agency's sales pipeline: count and total $ at each HubSpot deal stage, plus any deals that have been stuck >5 days in their current stage. Call this whenever Adam asks about deals, pipeline, calls booked, proposals out, or 'what's stale'.",
-    input_schema: {
-      type: 'object',
-      properties: {},
-      required: [],
-    },
-  },
-  {
-    name: 'get_money_summary',
-    description: "Returns financial state: MTD revenue, current MRR, target MRR for W2 replacement, and projected months to target at current growth pace. Call when Adam asks about revenue, MRR, money, or progress toward goal.",
-    input_schema: {
-      type: 'object',
-      properties: {},
-      required: [],
-    },
-  },
-  {
-    name: 'get_pending_replies',
-    description: "Returns the list of cold-email replies waiting for Adam's review — each with sender, subject snippet, classification (positive/question/other), and AI-drafted response. Call when Adam asks 'what's in the queue', 'any replies', 'pending', etc.",
-    input_schema: {
-      type: 'object',
-      properties: {},
-      required: [],
-    },
-  },
-  {
-    name: 'get_outbound_health',
-    description: "Returns the health of cold-email outbound: bounce rate, complaint rate, per-inbox reputation status, and any inboxes flagged for pause. Call when Adam asks about deliverability, inbox health, or 'is anything broken'.",
-    input_schema: {
-      type: 'object',
-      properties: {},
-      required: [],
-    },
-  },
-  {
-    name: 'get_agency_context',
-    description: "Returns reference info about the agency: tier definitions, deliverables per tier, the 5 internal agents' scopes, voice DNA. Call when Adam asks about offer details, agent roles, or process — or when you need to remind yourself of specifics.",
+    name: 'search_ops_library',
+    description: "Search Adam's full Nordic Nerd Operations library — sequences, agent rule files, system prompts, client templates, content calendar, daily ops checklists, infrastructure docs. ALWAYS call this BEFORE answering ANY question about agency processes, voice, pricing, deliverables, the 5 agents, sequences, GBP playbook, content workflow, or anything operational. Returns the top matching files with snippets. Query with the natural question or 2-5 keywords.",
     input_schema: {
       type: 'object',
       properties: {
-        topic: {
-          type: 'string',
-          enum: ['tiers', 'agents', 'voice', 'cities', 'niches', 'all'],
-          description: 'Which section of agency context to return.',
-        },
+        query: { type: 'string', description: 'Natural language question OR keywords (e.g. "voice DNA", "starter tier deliverables", "reply classification")' },
       },
-      required: ['topic'],
+      required: ['query'],
     },
+  },
+  {
+    name: 'get_ops_file',
+    description: 'Get the FULL content of a specific ops library file by path (e.g. "02-Agents/copywriter-agent.md"). Use after search_ops_library identifies the right file and you need more than the snippet.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string', description: 'Exact file path relative to the ops library root' },
+      },
+      required: ['path'],
+    },
+  },
+  {
+    name: 'list_ops_folder',
+    description: 'List all files in a specific ops library folder (e.g. "02-Agents", "03-Outbound-System", "04-Client-Templates"). Useful when Adam asks "what\'s in X" or you need to find a file you don\'t know the exact name of.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        folder: { type: 'string', description: 'Folder name like "02-Agents" or "06-Daily-Ops"' },
+      },
+      required: ['folder'],
+    },
+  },
+
+  // ---- LIVE BUSINESS DATA (stubs until connected) ----
+  {
+    name: 'get_pipeline_summary',
+    description: "Live HubSpot pipeline: count + $ at each deal stage, plus deals stuck >5 days. Call when Adam asks about pipeline, deals, calls booked, proposals.",
+    input_schema: { type: 'object', properties: {}, required: [] },
+  },
+  {
+    name: 'get_money_summary',
+    description: "Financial state: MTD revenue, MRR, target, projected months to W2-replacement at current pace. Call when Adam asks about money, revenue, MRR, or progress.",
+    input_schema: { type: 'object', properties: {}, required: [] },
+  },
+  {
+    name: 'get_pending_replies',
+    description: "Cold-email replies waiting for Adam's review — sender, subject, classification, draft. Call when Adam asks 'what's in the queue', 'any replies', 'pending'.",
+    input_schema: { type: 'object', properties: {}, required: [] },
+  },
+  {
+    name: 'get_outbound_health',
+    description: "Cold email deliverability: bounce rate, complaint rate, per-inbox reputation, any inboxes flagged. Call when Adam asks about deliverability, inbox health.",
+    input_schema: { type: 'object', properties: {}, required: [] },
   },
 
   // ---- WRITE actions (require confirmation in conversation) ----
   {
     name: 'add_deal_note',
-    description: "Add a timestamped note to a HubSpot deal. Low-risk write. Confirm with Adam before calling.",
+    description: "Add a note to a HubSpot deal. Confirm with Adam before calling.",
     input_schema: {
       type: 'object',
       properties: {
-        deal_id: { type: 'string', description: 'HubSpot deal ID' },
-        note: { type: 'string', description: 'Plain-text note body' },
+        deal_id: { type: 'string' },
+        note: { type: 'string' },
       },
       required: ['deal_id', 'note'],
     },
   },
   {
     name: 'send_audit_email',
-    description: "Send the prepared 'one-pager audit' email to a named contact. REQUIRES explicit confirmation from Adam before calling — state who and which audit, ask 'Confirm?', wait for yes.",
+    description: "Send the prepared 5-things-to-fix audit one-pager to a named contact. REQUIRES explicit confirmation before calling.",
     input_schema: {
       type: 'object',
       properties: {
-        contact_email: { type: 'string', description: 'Recipient email address' },
+        contact_email: { type: 'string' },
         contact_first_name: { type: 'string' },
         company_name: { type: 'string' },
       },
@@ -86,20 +91,12 @@ export const MIMIR_TOOLS: Anthropic.Tool[] = [
   },
   {
     name: 'trigger_weekly_scrape',
-    description: "Manually trigger the Apify weekly lead-scrape workflow. REQUIRES confirmation from Adam before calling — state estimated cost and lead volume, ask 'Confirm?', wait for yes.",
+    description: "Manually fire the Apify weekly lead-scrape workflow. REQUIRES confirmation. State expected lead count and cost first.",
     input_schema: {
       type: 'object',
       properties: {
-        cities: {
-          type: 'array',
-          items: { type: 'string' },
-          description: 'Override default cities. Empty array = use defaults from agency context.',
-        },
-        niches: {
-          type: 'array',
-          items: { type: 'string' },
-          description: 'Override default niches. Empty array = use defaults.',
-        },
+        cities: { type: 'array', items: { type: 'string' } },
+        niches: { type: 'array', items: { type: 'string' } },
       },
       required: [],
     },
@@ -107,135 +104,91 @@ export const MIMIR_TOOLS: Anthropic.Tool[] = [
 ]
 
 // =====================================================================
-// Tool HANDLERS — called from /api/chat.post.ts when Claude requests a tool.
-// All return mock data in v1. TODO comments mark where to wire live APIs.
+// HANDLERS
 // =====================================================================
 
 export async function executeToolCall(name: string, input: Record<string, unknown>): Promise<unknown> {
   switch (name) {
-    case 'get_pipeline_summary':       return getPipelineSummary()
-    case 'get_money_summary':          return getMoneySummary()
-    case 'get_pending_replies':        return getPendingReplies()
-    case 'get_outbound_health':        return getOutboundHealth()
-    case 'get_agency_context':         return getAgencyContext(String(input.topic ?? 'all'))
-    case 'add_deal_note':              return addDealNote(input)
-    case 'send_audit_email':           return sendAuditEmail(input)
-    case 'trigger_weekly_scrape':      return triggerWeeklyScrape(input)
+    case 'search_ops_library': return searchOpsLibrary(String(input.query ?? ''))
+    case 'get_ops_file':       return getOpsFile(String(input.path ?? '')) ?? { error: 'file not found' }
+    case 'list_ops_folder':    return listOpsFolder(String(input.folder ?? ''))
+    case 'get_pipeline_summary': return getPipelineSummary()
+    case 'get_money_summary':    return getMoneySummary()
+    case 'get_pending_replies':  return getPendingReplies()
+    case 'get_outbound_health':  return getOutboundHealth()
+    case 'add_deal_note':        return addDealNote(input)
+    case 'send_audit_email':     return sendAuditEmail(input)
+    case 'trigger_weekly_scrape': return triggerWeeklyScrape(input)
     default:
       return { error: `unknown tool: ${name}` }
   }
 }
 
-// --- READ tool implementations ---
+export function getOpsSyncStatus() {
+  return opsSyncStatus()
+}
+
+// --- Live data stubs (replace with real API calls when keys are set) ---
 
 function getPipelineSummary() {
-  // TODO: replace with live HubSpot fetch when NUXT_HUBSPOT_API_KEY is set.
-  // GET https://api.hubapi.com/crm/v3/objects/deals?properties=dealname,dealstage,amount,hs_lastmodifieddate
   return {
     asOf: new Date().toISOString(),
     source: 'mock — wire NUXT_HUBSPOT_API_KEY to go live',
     stages: [
-      { name: 'New Lead',      count: 0, value: 0 },
-      { name: 'Replied',       count: 0, value: 0 },
-      { name: 'Call Booked',   count: 0, value: 0 },
-      { name: 'Call Held',     count: 0, value: 0 },
+      { name: 'New Lead', count: 0, value: 0 },
+      { name: 'Replied', count: 0, value: 0 },
+      { name: 'Call Booked', count: 0, value: 0 },
+      { name: 'Call Held', count: 0, value: 0 },
       { name: 'Proposal Sent', count: 0, value: 0 },
-      { name: 'Won (MTD)',     count: 0, value: 0 },
+      { name: 'Won (MTD)', count: 0, value: 0 },
     ],
     staleDeals: [],
-    note: 'Pipeline empty — month one. Outbound has not launched yet.',
+    note: 'Pipeline empty — pre-launch.',
   }
 }
 
 function getMoneySummary() {
-  // TODO: replace with live Stripe fetch when NUXT_STRIPE_SECRET_KEY is set.
-  // GET https://api.stripe.com/v1/balance + /v1/subscriptions
   return {
     asOf: new Date().toISOString(),
     source: 'mock — wire NUXT_STRIPE_SECRET_KEY to go live',
     mtdRevenue: 0,
     mrr: 0,
-    targetMrr: 0, // TODO: set when Adam decides his W2 replacement number
+    targetMrr: 0,
     monthsToTarget: null,
-    burnMTD: 220, // approx from tools-and-accounts.md
-    note: 'Zero revenue — month one. Burn ~$220/mo per the stack inventory.',
+    burnMTD: 220,
+    note: 'Zero revenue. Month one. Per plan.',
   }
 }
 
 function getPendingReplies() {
-  // TODO: replace with Smartlead/Instantly webhook log or Gmail "Cold Replies" label query.
   return {
     asOf: new Date().toISOString(),
-    source: 'mock — wire NUXT_SMARTLEAD_API_KEY or Gmail label query',
+    source: 'mock — wire NUXT_INSTANTLY_API_KEY or NUXT_SMARTLEAD_API_KEY',
     pending: 0,
     recent: [],
-    note: 'No replies yet — outbound has not launched.',
+    note: 'The queue is clean.',
   }
 }
 
 function getOutboundHealth() {
-  // TODO: replace with Smartlead API GET /api/v1/email-accounts + health endpoint.
   return {
     asOf: new Date().toISOString(),
-    source: 'mock — wire NUXT_SMARTLEAD_API_KEY',
+    source: 'mock — wire NUXT_INSTANTLY_API_KEY or NUXT_SMARTLEAD_API_KEY',
     bounceRate7d: 0,
     complaintRate7d: 0,
     inboxes: [],
-    note: 'Inboxes not provisioned yet — pre-DNS, pre-warmup.',
+    note: 'Inboxes not provisioned yet.',
   }
 }
-
-function getAgencyContext(topic: string) {
-  // This is static reference data that mirrors ~/Personal/NordicNerd-Ops/.
-  const ctx: Record<string, unknown> = {
-    tiers: {
-      starter: { mrr: 1500, deliverables: 'Nuxt 3 site + GBP optimization + monthly reporting. 1 revision round/mo.' },
-      growth:  { mrr: 2000, deliverables: 'Starter + 4 local SEO city/niche pages/mo + 2 blog posts/mo + review automation + 30-min monthly check-in.' },
-      authority: { mrr: 2500, deliverables: 'Growth + 8 SEO pages/mo + 4 posts/mo + 60-min monthly strategy call + quarterly competitor audit + priority 24h SLA.' },
-    },
-    agents: {
-      outboundOps: 'Owns scrape, deliverability, list hygiene, sequencer state.',
-      copywriter:  'Owns all prospect/client copy, sequence emails, reply drafts.',
-      pipeline:    'Owns reply → call → proposal → signed → first invoice.',
-      clientDelivery: 'Owns site builds, GBP, content, monthly reports.',
-      operations:  'Owns daily briefings, weekly rollups, monthly retros, scoreboards.',
-    },
-    voice: 'Peer-to-peer, technical, slightly nerdy. Lowercase opener fine. Banned: leverage, synergy, streamline, solutions (as noun), game-changer, hope this finds you well.',
-    cities: ['Lakeland', 'Winter Haven', 'Bartow', 'Auburndale', 'Haines City', 'Davenport', 'Lake Wales'],
-    niches: ['general_contractor', 'kitchen_bath', 'roofing', 'hvac', 'electrician', 'plumber', 'landscaper', 'pool_builder'],
-  }
-  if (topic === 'all') return ctx
-  return { [topic]: ctx[topic] ?? null }
-}
-
-// --- WRITE tool implementations (stubbed; mark clearly) ---
 
 function addDealNote(input: Record<string, unknown>) {
-  // TODO: POST https://api.hubapi.com/crm/v4/objects/notes with deal association.
-  return {
-    success: false,
-    stub: true,
-    note: 'add_deal_note not yet wired. Will POST to HubSpot notes API once NUXT_HUBSPOT_API_KEY is set.',
-    received: input,
-  }
+  return { success: false, stub: true, note: 'add_deal_note not wired. POSTs to HubSpot when NUXT_HUBSPOT_API_KEY set.', received: input }
 }
 
 function sendAuditEmail(input: Record<string, unknown>) {
-  // TODO: trigger Gmail or Smartlead send of the audit one-pager template.
-  return {
-    success: false,
-    stub: true,
-    note: 'send_audit_email not yet wired. Will use Gmail API or Smartlead send-as-reply once configured.',
-    received: input,
-  }
+  return { success: false, stub: true, note: 'send_audit_email not wired. Gmail or Instantly send when configured.', received: input }
 }
 
 function triggerWeeklyScrape(input: Record<string, unknown>) {
-  // TODO: POST to n8n webhook for workflow 01-weekly-scrape.
-  return {
-    success: false,
-    stub: true,
-    note: 'trigger_weekly_scrape not yet wired. Will POST to n8n.thenordicnerd.com webhook once VPS is deployed.',
-    received: input,
-  }
+  return { success: false, stub: true, note: 'trigger_weekly_scrape not wired. POSTs to n8n.thenordicnerd.com webhook once VPS deployed.', received: input }
 }
