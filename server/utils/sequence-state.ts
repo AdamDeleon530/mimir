@@ -1,17 +1,26 @@
 /**
- * Sequence queue — file-based state for cold email sends.
+ * Sequence queue — KV-backed state for cold email sends.
  *
- * Persists to server/data/sequences.json. Note: Vercel deploys reset filesystem state.
- * For production persistence, swap to Upstash Redis or Vercel KV (~30 min change).
+ * Now stored in KV under a single key: mimir:queue. The old file at
+ * server/data/sequences.json is no longer used — the file backend of the
+ * KV abstraction writes to server/data/kv-cache.json when there's no
+ * Upstash. In production (Vercel + Upstash), state survives deploys.
  *
- * State shape:
+ * Migration note: existing local sequences.json values are NOT auto-imported.
+ * If you have live queued leads in the old file, run scripts/migrate-queue.ts
+ * (TODO if needed) before deleting it.
+ *
+ * State shape (same as before):
  *   sequences: per-lead 4-email schedules, with current step + next send time
  *   sent_counts_by_inbox_day: throttling tracker, "{email}|{YYYY-MM-DD}" → count
  */
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs'
-import { dirname, join } from 'node:path'
+import { kv } from './kv'
 
-const STATE_FILE = join(process.cwd(), 'server', 'data', 'sequences.json')
+const QUEUE_KEY = 'mimir:queue'
+
+// =====================================================================
+// TYPES (unchanged)
+// =====================================================================
 
 export interface SequencedLead {
   // Identity
@@ -22,10 +31,10 @@ export interface SequencedLead {
   // Merge variables
   city: string
   niche: string
-  first_line: string  // not used in v1 templates (relaxed sequence is first-line-free), but stored
+  first_line: string
   // Sequence state
-  current_step: 0 | 1 | 2 | 3 | 4  // 0 = queued, not yet sent
-  next_send_at: string             // ISO timestamp
+  current_step: 0 | 1 | 2 | 3 | 4
+  next_send_at: string
   status: 'active' | 'paused' | 'completed' | 'replied' | 'bounced' | 'unsubscribed'
   history: SendEvent[]
   queued_at: string
@@ -46,32 +55,47 @@ interface State {
   last_updated: string
 }
 
-function ensureFile(): State {
-  if (!existsSync(STATE_FILE)) {
-    mkdirSync(dirname(STATE_FILE), { recursive: true })
-    const empty: State = { sequences: [], sent_counts_by_inbox_day: {}, last_updated: new Date().toISOString() }
-    writeFileSync(STATE_FILE, JSON.stringify(empty, null, 2))
-    return empty
+const EMPTY_STATE: State = {
+  sequences: [],
+  sent_counts_by_inbox_day: {},
+  last_updated: new Date(0).toISOString(),
+}
+
+// =====================================================================
+// KV-BACKED READ / WRITE
+// =====================================================================
+
+async function loadState(): Promise<State> {
+  const stored = await kv().get<State>(QUEUE_KEY)
+  if (!stored) return { ...EMPTY_STATE, last_updated: new Date(0).toISOString() }
+  // Defensive shape check
+  return {
+    sequences: Array.isArray(stored.sequences) ? stored.sequences : [],
+    sent_counts_by_inbox_day: stored.sent_counts_by_inbox_day ?? {},
+    last_updated: stored.last_updated ?? new Date(0).toISOString(),
   }
-  return JSON.parse(readFileSync(STATE_FILE, 'utf-8')) as State
 }
 
-function save(state: State): void {
+async function saveState(state: State): Promise<void> {
   state.last_updated = new Date().toISOString()
-  writeFileSync(STATE_FILE, JSON.stringify(state, null, 2))
+  await kv().set(QUEUE_KEY, state)
 }
 
-export function readState(): State {
-  return ensureFile()
+export async function readState(): Promise<State> {
+  return loadState()
 }
 
-export function queueLead(lead: Omit<SequencedLead, 'current_step' | 'next_send_at' | 'status' | 'history' | 'queued_at'>): { added: boolean; reason?: string } {
-  const state = ensureFile()
-  // Dedup: skip if email already in queue (any status except completed/unsubscribed allow re-queue? for now strict)
+// =====================================================================
+// PUBLIC API
+// =====================================================================
+
+export async function queueLead(
+  lead: Omit<SequencedLead, 'current_step' | 'next_send_at' | 'status' | 'history' | 'queued_at'>,
+): Promise<{ added: boolean; reason?: string }> {
+  const state = await loadState()
   const existing = state.sequences.find(s => s.email.toLowerCase() === lead.email.toLowerCase())
   if (existing) return { added: false, reason: `already in queue (status: ${existing.status})` }
 
-  // Schedule email 1 for next business day at 9:30 AM ET
   const nextSend = nextBusinessMorning()
   state.sequences.push({
     ...lead,
@@ -81,21 +105,24 @@ export function queueLead(lead: Omit<SequencedLead, 'current_step' | 'next_send_
     history: [],
     queued_at: new Date().toISOString(),
   })
-  save(state)
+  await saveState(state)
   return { added: true }
 }
 
-export function pauseLead(email: string, reason: 'replied' | 'unsubscribed' | 'bounced' | 'paused' = 'paused'): boolean {
-  const state = ensureFile()
+export async function pauseLead(
+  email: string,
+  reason: 'replied' | 'unsubscribed' | 'bounced' | 'paused' = 'paused',
+): Promise<boolean> {
+  const state = await loadState()
   const lead = state.sequences.find(s => s.email.toLowerCase() === email.toLowerCase())
   if (!lead) return false
   lead.status = reason
-  save(state)
+  await saveState(state)
   return true
 }
 
-export function findDueLeads(now = new Date()): SequencedLead[] {
-  const state = ensureFile()
+export async function findDueLeads(now = new Date()): Promise<SequencedLead[]> {
+  const state = await loadState()
   return state.sequences.filter(s =>
     s.status === 'active' &&
     s.current_step < 4 &&
@@ -103,13 +130,16 @@ export function findDueLeads(now = new Date()): SequencedLead[] {
   )
 }
 
-export function recordSend(email: string, event: SendEvent, nextDelayDays: number | null): void {
-  const state = ensureFile()
+export async function recordSend(
+  email: string,
+  event: SendEvent,
+  nextDelayDays: number | null,
+): Promise<void> {
+  const state = await loadState()
   const lead = state.sequences.find(s => s.email.toLowerCase() === email.toLowerCase())
   if (!lead) return
 
   lead.history.push(event)
-  // Increment per-inbox per-day counter
   const dayKey = `${event.inbox}|${event.sent_at.slice(0, 10)}`
   state.sent_counts_by_inbox_day[dayKey] = (state.sent_counts_by_inbox_day[dayKey] ?? 0) + 1
 
@@ -120,19 +150,21 @@ export function recordSend(email: string, event: SendEvent, nextDelayDays: numbe
     } else if (nextDelayDays !== null) {
       const next = new Date()
       next.setUTCDate(next.getUTCDate() + nextDelayDays)
-      // shift to next business morning
       lead.next_send_at = atBusinessMorning(next).toISOString()
     }
   }
-  save(state)
+  await saveState(state)
 }
 
-export function inboxSentToday(inbox: string, day = new Date().toISOString().slice(0, 10)): number {
-  const state = ensureFile()
+export async function inboxSentToday(
+  inbox: string,
+  day = new Date().toISOString().slice(0, 10),
+): Promise<number> {
+  const state = await loadState()
   return state.sent_counts_by_inbox_day[`${inbox}|${day}`] ?? 0
 }
 
-export function getQueueStatus(): {
+export async function getQueueStatus(): Promise<{
   total: number
   active: number
   paused: number
@@ -141,8 +173,8 @@ export function getQueueStatus(): {
   due_today: number
   next_24h: number
   sent_today_by_inbox: Record<string, number>
-} {
-  const state = ensureFile()
+}> {
+  const state = await loadState()
   const today = new Date().toISOString().slice(0, 10)
   const now = Date.now()
   const in24h = now + 24 * 3600 * 1000
@@ -173,9 +205,23 @@ export function getQueueStatus(): {
   }
 }
 
-// ============================================================
-// Time helpers — keep sends to Tue-Fri 9:30am ET ish
-// ============================================================
+// Bulk pause — fix for "queued the wrong batch" without N round-trips
+export async function pauseBatchByDomain(domain: string, reason: 'paused' | 'unsubscribed' = 'paused'): Promise<{ paused: number }> {
+  const state = await loadState()
+  let paused = 0
+  for (const s of state.sequences) {
+    if (s.status === 'active' && s.email.toLowerCase().endsWith(`@${domain.toLowerCase()}`)) {
+      s.status = reason
+      paused++
+    }
+  }
+  if (paused > 0) await saveState(state)
+  return { paused }
+}
+
+// =====================================================================
+// Time helpers
+// =====================================================================
 
 function nextBusinessMorning(): Date {
   const next = new Date()
@@ -185,12 +231,11 @@ function nextBusinessMorning(): Date {
 
 function atBusinessMorning(d: Date): Date {
   const r = new Date(d)
-  // Skip weekends — Mon = 1, Fri = 5
+  // Skip weekends and Mondays — Tue-Fri send window per ops library best practice
   while (r.getUTCDay() === 0 || r.getUTCDay() === 6 || r.getUTCDay() === 1) {
-    // Skip Sundays, Saturdays, and Mondays (Tue-Fri only per ops library best practice)
     r.setUTCDate(r.getUTCDate() + 1)
   }
-  // 9:30 AM ET = 13:30 UTC (EST) or 14:30 UTC (EDT). Use 14:00 UTC as a midpoint.
+  // 9:30 AM ET ≈ 14:00 UTC year-round midpoint
   r.setUTCHours(14, 0, 0, 0)
   return r
 }

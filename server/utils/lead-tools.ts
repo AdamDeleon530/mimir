@@ -8,6 +8,7 @@
  * For very large batches (>20 leads), prefer the n8n batch workflow on the VPS.
  */
 import Anthropic from '@anthropic-ai/sdk'
+import { memoize, hashKey } from './kv-cache'
 
 // ============================================================
 // TYPES
@@ -62,6 +63,27 @@ interface SearchInput {
 }
 
 export async function searchLeads(input: SearchInput): Promise<{
+  asOf: string
+  query: string
+  scrapedCount: number
+  scoredAndFiltered: ScoredBusiness[]
+  filter: { score_min: number; score_max: number }
+  cached?: boolean
+  note?: string
+}> {
+  // 6-hour memo on the exact (query, max_results, score_range) triple.
+  // Saves the ~$0.05 Apify hit when Adam re-runs the same search.
+  const cacheKey = `mimir:search:${hashKey(JSON.stringify({
+    q: input.query.toLowerCase().trim(),
+    n: input.max_results ?? 15,
+    smin: input.score_min ?? 3,
+    smax: input.score_max ?? 7,
+  }))}`
+  const { value, cached } = await memoize(cacheKey, 6 * 3600, () => doSearchLeads(input))
+  return { ...value, cached }
+}
+
+async function doSearchLeads(input: SearchInput): Promise<{
   asOf: string
   query: string
   scrapedCount: number

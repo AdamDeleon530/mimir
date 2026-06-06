@@ -1,7 +1,7 @@
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
 
-const { messages, sending, send, lastReply } = useMimir()
+const { messages, sending, send, lastReply, activeTools, clear: clearConversation, loadMemory } = useMimir()
 const {
   listening, transcribing, speaking, transcript,
   startListening, stopListening, speak, stopSpeaking,
@@ -29,8 +29,34 @@ const { data: status, refresh: refreshStatus } = await useAsyncData<AgencyStatus
 // Clock
 const now = ref(new Date())
 let clockId: ReturnType<typeof setInterval> | null = null
-onMounted(() => { clockId = setInterval(() => { now.value = new Date() }, 1000) })
-onUnmounted(() => { if (clockId) clearInterval(clockId) })
+
+// Auto-refresh agency status every 60s.
+// Tracks lastRefreshAt so we can surface "Xs ago" and a stale warning.
+const lastRefreshAt = ref(new Date())
+const statusError = ref<string | null>(null)
+let refreshId: ReturnType<typeof setInterval> | null = null
+async function autoRefresh(): Promise<void> {
+  try {
+    await refreshStatus()
+    lastRefreshAt.value = new Date()
+    statusError.value = null
+  } catch (err) {
+    statusError.value = err instanceof Error ? err.message : 'refresh failed'
+  }
+}
+
+onMounted(() => {
+  clockId = setInterval(() => { now.value = new Date() }, 1000)
+  refreshId = setInterval(autoRefresh, 60_000)
+  void loadMemory()
+})
+onUnmounted(() => {
+  if (clockId) clearInterval(clockId)
+  if (refreshId) clearInterval(refreshId)
+})
+
+const statusAgeSec = computed(() => Math.floor((now.value.getTime() - lastRefreshAt.value.getTime()) / 1000))
+const statusIsStale = computed(() => statusAgeSec.value > 300)  // >5 min = stale
 
 const timeStr = computed(() => now.value.toLocaleTimeString('en-US', { hour12: false }))
 const dateStr = computed(() => now.value.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }))
@@ -127,7 +153,13 @@ function timeAgo(iso: string): string {
 
       <div class="header__meta">
         <span class="header__loc">Winter Haven · FL</span>
-        <button @click="refreshStatus()" class="header__link" title="Refresh agency status">↻</button>
+        <span
+          :class="['header__freshness', statusIsStale ? 'header__freshness--stale' : '']"
+          :title="statusError ?? `updated ${statusAgeSec}s ago`"
+        >
+          {{ statusError ? '⚠ stale' : statusAgeSec < 60 ? `updated ${statusAgeSec}s ago` : `updated ${Math.floor(statusAgeSec/60)}m ago` }}
+        </span>
+        <button @click="autoRefresh()" class="header__link" title="Refresh agency status">↻</button>
       </div>
     </header>
 
@@ -224,6 +256,12 @@ function timeAgo(iso: string): string {
         <header class="panel__head panel__head--full">
           <span class="panel__title">Conversation</span>
           <span class="panel__msg-count" v-if="messages.length">{{ messages.length }}</span>
+          <button
+            v-if="messages.length"
+            @click="clearConversation()"
+            class="panel__refresh panel__clear"
+            title="Clear conversation memory"
+          >×</button>
         </header>
         <div ref="messagesRef" class="convo">
           <div v-if="!messages.length" class="convo__empty">
@@ -234,11 +272,17 @@ function timeAgo(iso: string): string {
               <span class="msg__rune">ᚾ</span> Mimir
             </div>
             <div v-else class="msg__head">You</div>
-            <div class="msg__body">{{ msg.content }}</div>
-          </div>
-          <div v-if="sending" class="msg msg--assistant msg--pending">
-            <div class="msg__head"><span class="msg__rune">ᚾ</span> Mimir</div>
-            <div class="msg__body"><em>consulting the well…</em></div>
+            <!-- Inline tool trace (read-only, dimmed) -->
+            <ul v-if="msg.toolUse && msg.toolUse.length" class="msg__tools">
+              <li v-for="(tu, ti) in msg.toolUse" :key="ti" :class="['msg__tool', `msg__tool--${tu.state}`]">
+                <span class="msg__tool-icon">{{ tu.state === 'running' ? '◌' : '✓' }}</span>
+                <span class="msg__tool-name">{{ tu.name }}</span>
+              </li>
+            </ul>
+            <div class="msg__body" v-if="msg.content">{{ msg.content }}</div>
+            <div v-else-if="msg.role === 'assistant' && sending && i === messages.length - 1" class="msg__body msg__body--pending">
+              <em>consulting the well…</em>
+            </div>
           </div>
         </div>
       </aside>
@@ -406,6 +450,18 @@ function timeAgo(iso: string): string {
   transition: all 0.2s;
 }
 .header__link:hover { color: var(--gold); border-color: var(--panel-border-strong); }
+.header__freshness {
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text-dim);
+  opacity: 0.6;
+  letter-spacing: 0.02em;
+}
+.header__freshness--stale {
+  color: #d97a4a;
+  opacity: 1;
+  font-weight: 500;
+}
 
 /* === GRID === */
 .jarvis__grid {
@@ -453,6 +509,7 @@ function timeAgo(iso: string): string {
   line-height: 1;
 }
 .panel__refresh:hover { color: var(--gold); }
+.panel__clear { margin-left: 8px; font-size: 16px; line-height: 1; }
 .panel__msg-count {
   font-size: 11px;
   color: var(--text-dim);
@@ -662,6 +719,37 @@ function timeAgo(iso: string): string {
   color: var(--text);
 }
 .msg--pending .msg__body { color: var(--text-dim); }
+.msg__body--pending { color: var(--text-dim); font-style: italic; }
+
+.msg__tools {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 6px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.msg__tool {
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--text-dim);
+  font-family: 'JetBrains Mono', monospace;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  opacity: 0.7;
+}
+.msg__tool--running { color: var(--gold-bright); opacity: 1; }
+.msg__tool--done { opacity: 0.55; }
+.msg__tool-icon { width: 12px; text-align: center; }
+.msg__tool--running .msg__tool-icon {
+  animation: pulse 1s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+.msg__tool-name { font-weight: 500; }
 
 /* === FOOTER === */
 .jarvis__footer {

@@ -4,8 +4,6 @@ import {
   searchLeads,
   enrichLeads,
   generateFirstLines,
-  pushToInstantly,
-  listInstantlyCampaigns,
   scrapeWebsite,
   type ScoredBusiness,
   type EnrichedLead,
@@ -21,6 +19,7 @@ import {
   githubHealthCheck,
   listManagedRepos,
 } from './code-changes'
+import { getPendingReplies } from './reply-ingester'
 
 // =====================================================================
 // Tool DEFINITIONS — Claude sees these and decides when to call them.
@@ -62,27 +61,10 @@ export const MIMIR_TOOLS: Anthropic.Tool[] = [
     },
   },
 
-  // ---- LIVE BUSINESS DATA (stubs until connected) ----
-  {
-    name: 'get_pipeline_summary',
-    description: "Live HubSpot pipeline: count + $ at each deal stage, plus deals stuck >5 days. Call when Adam asks about pipeline, deals, calls booked, proposals.",
-    input_schema: { type: 'object', properties: {}, required: [] },
-  },
-  {
-    name: 'get_money_summary',
-    description: "Financial state: MTD revenue, MRR, target, projected months to W2-replacement at current pace. Call when Adam asks about money, revenue, MRR, or progress.",
-    input_schema: { type: 'object', properties: {}, required: [] },
-  },
-  {
-    name: 'get_pending_replies',
-    description: "Cold-email replies waiting for Adam's review — sender, subject, classification, draft. Call when Adam asks 'what's in the queue', 'any replies', 'pending'.",
-    input_schema: { type: 'object', properties: {}, required: [] },
-  },
-  {
-    name: 'get_outbound_health',
-    description: "Cold email deliverability: bounce rate, complaint rate, per-inbox reputation, any inboxes flagged. Call when Adam asks about deliverability, inbox health.",
-    input_schema: { type: 'object', properties: {}, required: [] },
-  },
+  // ---- LIVE BUSINESS DATA ----
+  // Pipeline / money / outbound-health stubs were removed in the cull —
+  // re-add only when HubSpot + Stripe + Smartlead are actually wired.
+  // get_pending_replies will be added back when reply ingestion ships.
 
   // ---- LEAD GENERATION SUITE ----
   {
@@ -121,23 +103,7 @@ export const MIMIR_TOOLS: Anthropic.Tool[] = [
       required: ['leads'],
     },
   },
-  {
-    name: 'list_instantly_campaigns',
-    description: "Return Adam's Instantly campaigns so you know which campaign_id to push leads to. Call before push_to_instantly if Adam hasn't specified the campaign.",
-    input_schema: { type: 'object', properties: {}, required: [] },
-  },
-  {
-    name: 'push_to_instantly',
-    description: "[Legacy — prefer queue_sequence] Push leads to an Instantly campaign. Only use if Adam still has Instantly. REQUIRES confirmation.",
-    input_schema: {
-      type: 'object',
-      properties: {
-        leads: { type: 'array' },
-        campaign_id: { type: 'string' },
-      },
-      required: ['leads', 'campaign_id'],
-    },
-  },
+  // Instantly tools removed in the cull — queue_sequence replaces them entirely.
 
   // ---- LOCAL SEQUENCE QUEUE (replaces Instantly — free, uses Gmail SMTP) ----
   {
@@ -174,6 +140,17 @@ export const MIMIR_TOOLS: Anthropic.Tool[] = [
     input_schema: { type: 'object', properties: {}, required: [] },
   },
   {
+    name: 'get_pending_replies',
+    description: "Recent inbound replies pulled by the IMAP poller — sender, classification, intent, escalation flag, and the suggested draft. Use when Adam asks 'any replies', 'what's in the inbox', 'who responded'. Read-only.",
+    input_schema: {
+      type: 'object',
+      properties: {
+        limit: { type: 'number', description: 'How many recent replies to return. Default 20.' },
+      },
+      required: [],
+    },
+  },
+  {
     name: 'scrape_website',
     description: "Fetch a website and extract contact info: emails, phone numbers, social links, page title, meta description, and a text excerpt. Crawls homepage + /contact, /contact-us, /about, /about-us, /team (stops at first 3 successful loads). Use when Adam asks 'find an email on this site', 'what does this contractor do', 'check their site for me', or when you need contact info for a single lead outside the search/enrich pipeline. Read-only, free, ~5-15s.",
     input_schema: {
@@ -185,44 +162,8 @@ export const MIMIR_TOOLS: Anthropic.Tool[] = [
     },
   },
 
-  // ---- WRITE actions (require confirmation in conversation) ----
-  {
-    name: 'add_deal_note',
-    description: "Add a note to a HubSpot deal. Confirm with Adam before calling.",
-    input_schema: {
-      type: 'object',
-      properties: {
-        deal_id: { type: 'string' },
-        note: { type: 'string' },
-      },
-      required: ['deal_id', 'note'],
-    },
-  },
-  {
-    name: 'send_audit_email',
-    description: "Send the prepared 5-things-to-fix audit one-pager to a named contact. REQUIRES explicit confirmation before calling.",
-    input_schema: {
-      type: 'object',
-      properties: {
-        contact_email: { type: 'string' },
-        contact_first_name: { type: 'string' },
-        company_name: { type: 'string' },
-      },
-      required: ['contact_email', 'contact_first_name', 'company_name'],
-    },
-  },
-  {
-    name: 'trigger_weekly_scrape',
-    description: "Manually fire the Apify weekly lead-scrape workflow. REQUIRES confirmation. State expected lead count and cost first.",
-    input_schema: {
-      type: 'object',
-      properties: {
-        cities: { type: 'array', items: { type: 'string' } },
-        niches: { type: 'array', items: { type: 'string' } },
-      },
-      required: [],
-    },
-  },
+  // add_deal_note, send_audit_email, trigger_weekly_scrape removed in the cull —
+  // re-add when HubSpot, the audit one-pager, and the VPS n8n exist.
 
   // ---- CODE CHANGE PIPELINE (Mimir-as-Claude-Code) ----
   {
@@ -305,19 +246,12 @@ export async function executeToolCall(name: string, input: Record<string, unknow
       return enrichLeads((input.leads as ScoredBusiness[]) ?? [])
     case 'generate_first_lines':
       return generateFirstLines((input.leads as EnrichedLead[]) ?? [])
-    case 'push_to_instantly':
-      return pushToInstantly({
-        leads: (input.leads as LeadWithFirstLine[]) ?? [],
-        campaign_id: String(input.campaign_id ?? ''),
-      })
-    case 'list_instantly_campaigns':
-      return listInstantlyCampaigns()
     case 'queue_sequence': {
       const leads = (input.leads as LeadWithFirstLine[]) ?? []
       let added = 0; let skipped = 0; const skipReasons: string[] = []
       for (const l of leads) {
         if (!l.contact_email) { skipped++; continue }
-        const result = queueLead({
+        const result = await queueLead({
           email: l.contact_email,
           first_name: l.contact_first_name ?? '',
           last_name: l.contact_last_name ?? '',
@@ -332,20 +266,15 @@ export async function executeToolCall(name: string, input: Record<string, unknow
       return { asOf: new Date().toISOString(), added, skipped, skipReasons: skipReasons.slice(0, 5), note: `Sequence starts next business morning. Check inbox_status before scaling up.` }
     }
     case 'get_queue_status':
-      return getQueueStatus()
+      return await getQueueStatus()
     case 'pause_lead':
-      return { ok: pauseLead(String(input.email ?? ''), (input.reason as 'replied' | 'unsubscribed' | 'bounced' | 'paused' | undefined) ?? 'paused') }
+      return { ok: await pauseLead(String(input.email ?? ''), (input.reason as 'replied' | 'unsubscribed' | 'bounced' | 'paused' | undefined) ?? 'paused') }
     case 'inbox_status':
-      return { configured: inboxesConfigured(), inboxes: inboxStatus() }
+      return { configured: inboxesConfigured(), inboxes: await inboxStatus() }
+    case 'get_pending_replies':
+      return getPendingReplies(typeof input.limit === 'number' ? input.limit : 20)
     case 'scrape_website':
       return scrapeWebsite(String(input.url ?? ''))
-    case 'get_pipeline_summary': return getPipelineSummary()
-    case 'get_money_summary':    return getMoneySummary()
-    case 'get_pending_replies':  return getPendingReplies()
-    case 'get_outbound_health':  return getOutboundHealth()
-    case 'add_deal_note':        return addDealNote(input)
-    case 'send_audit_email':     return sendAuditEmail(input)
-    case 'trigger_weekly_scrape': return triggerWeeklyScrape(input)
     // ---- Code-change pipeline ----
     case 'list_managed_repos':
       return { repos: listManagedRepos() }
@@ -371,67 +300,7 @@ export function getOpsSyncStatus() {
   return opsSyncStatus()
 }
 
-// --- Live data stubs (replace with real API calls when keys are set) ---
-
-function getPipelineSummary() {
-  return {
-    asOf: new Date().toISOString(),
-    source: 'mock — wire NUXT_HUBSPOT_API_KEY to go live',
-    stages: [
-      { name: 'New Lead', count: 0, value: 0 },
-      { name: 'Replied', count: 0, value: 0 },
-      { name: 'Call Booked', count: 0, value: 0 },
-      { name: 'Call Held', count: 0, value: 0 },
-      { name: 'Proposal Sent', count: 0, value: 0 },
-      { name: 'Won (MTD)', count: 0, value: 0 },
-    ],
-    staleDeals: [],
-    note: 'Pipeline empty — pre-launch.',
-  }
-}
-
-function getMoneySummary() {
-  return {
-    asOf: new Date().toISOString(),
-    source: 'mock — wire NUXT_STRIPE_SECRET_KEY to go live',
-    mtdRevenue: 0,
-    mrr: 0,
-    targetMrr: 0,
-    monthsToTarget: null,
-    burnMTD: 220,
-    note: 'Zero revenue. Month one. Per plan.',
-  }
-}
-
-function getPendingReplies() {
-  return {
-    asOf: new Date().toISOString(),
-    source: 'mock — wire NUXT_INSTANTLY_API_KEY or NUXT_SMARTLEAD_API_KEY',
-    pending: 0,
-    recent: [],
-    note: 'The queue is clean.',
-  }
-}
-
-function getOutboundHealth() {
-  return {
-    asOf: new Date().toISOString(),
-    source: 'mock — wire NUXT_INSTANTLY_API_KEY or NUXT_SMARTLEAD_API_KEY',
-    bounceRate7d: 0,
-    complaintRate7d: 0,
-    inboxes: [],
-    note: 'Inboxes not provisioned yet.',
-  }
-}
-
-function addDealNote(input: Record<string, unknown>) {
-  return { success: false, stub: true, note: 'add_deal_note not wired. POSTs to HubSpot when NUXT_HUBSPOT_API_KEY set.', received: input }
-}
-
-function sendAuditEmail(input: Record<string, unknown>) {
-  return { success: false, stub: true, note: 'send_audit_email not wired. Gmail or Instantly send when configured.', received: input }
-}
-
-function triggerWeeklyScrape(input: Record<string, unknown>) {
-  return { success: false, stub: true, note: 'trigger_weekly_scrape not wired. POSTs to n8n.thenordicnerd.com webhook once VPS deployed.', received: input }
-}
+// Stub helpers (getPipelineSummary, getMoneySummary, getPendingReplies,
+// getOutboundHealth, addDealNote, sendAuditEmail, triggerWeeklyScrape) were
+// removed in the cull. See git history if re-adding when the underlying
+// integrations are wired (HubSpot, Stripe, IMAP, VPS n8n).

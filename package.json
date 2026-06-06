@@ -22,6 +22,7 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.1",
     "@nuxtjs/tailwindcss": "^6.12.2",
+    "imapflow": "^1.0.181",
     "nodemailer": "^6.9.16",
     "nuxt": "^3.14.0",
     "vue": "latest",

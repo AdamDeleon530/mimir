@@ -23,11 +23,11 @@ export default defineEventHandler(async (event) => {
     return { ok: false, error: 'no inboxes configured — set NUXT_GMAIL_INBOX_1_EMAIL + NUXT_GMAIL_INBOX_1_PASSWORD' }
   }
 
-  const due = findDueLeads()
+  const due = await findDueLeads()
   const results: Array<{ email: string; step: number; status: string; inbox?: string; error?: string }> = []
 
   for (const lead of due) {
-    const inbox = pickNextInbox()
+    const inbox = await pickNextInbox()
     if (!inbox) {
       results.push({ email: lead.email, step: lead.current_step + 1, status: 'skipped — all inboxes at daily cap' })
       break
@@ -70,7 +70,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const nextTemplate = POLK_RELAXED_V1.find(s => s.step === nextStep + 1)
-    recordSend(lead.email, event_record, nextTemplate ? nextTemplate.delay_days : null)
+    await recordSend(lead.email, event_record, nextTemplate ? nextTemplate.delay_days : null)
 
     results.push({
       email: lead.email,

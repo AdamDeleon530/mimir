@@ -48,21 +48,23 @@ function getTransporter(inbox: Inbox): Transporter {
 /**
  * Picks the inbox with the lowest sent-today count. Returns null if all are at cap.
  */
-export function pickNextInbox(): Inbox | null {
+export async function pickNextInbox(): Promise<Inbox | null> {
   const inboxes = loadInboxes()
   if (!inboxes.length) return null
-  const sorted = [...inboxes].sort((a, b) => inboxSentToday(a.email) - inboxSentToday(b.email))
-  const cheapest = sorted[0]
+  const counts = await Promise.all(inboxes.map(async (i) => ({ inbox: i, count: await inboxSentToday(i.email) })))
+  counts.sort((a, b) => a.count - b.count)
+  const cheapest = counts[0]
   if (!cheapest) return null
-  if (inboxSentToday(cheapest.email) >= MAX_PER_INBOX_PER_DAY) return null
-  return cheapest
+  if (cheapest.count >= MAX_PER_INBOX_PER_DAY) return null
+  return cheapest.inbox
 }
 
-export function inboxStatus(): Array<{ email: string; sent_today: number; cap: number; can_send: boolean }> {
-  return loadInboxes().map(i => {
-    const sent = inboxSentToday(i.email)
+export async function inboxStatus(): Promise<Array<{ email: string; sent_today: number; cap: number; can_send: boolean }>> {
+  const inboxes = loadInboxes()
+  return Promise.all(inboxes.map(async (i) => {
+    const sent = await inboxSentToday(i.email)
     return { email: i.email, sent_today: sent, cap: MAX_PER_INBOX_PER_DAY, can_send: sent < MAX_PER_INBOX_PER_DAY }
-  })
+  }))
 }
 
 export async function sendEmail(opts: {
