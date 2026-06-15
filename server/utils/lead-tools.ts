@@ -9,6 +9,9 @@
  */
 import Anthropic from '@anthropic-ai/sdk'
 import { memoize, hashKey } from './kv-cache'
+import { upsertLead, normalizeDomain, recordInteraction } from './lead-db'
+import { searchYelp } from './source-yelp'
+import { searchBbb } from './source-bbb'
 
 // ============================================================
 // TYPES
@@ -68,6 +71,7 @@ export async function searchLeads(input: SearchInput): Promise<{
   scrapedCount: number
   scoredAndFiltered: ScoredBusiness[]
   filter: { score_min: number; score_max: number }
+  sources_used?: Array<{ name: string; raw_count: number; status: 'ok' | 'empty' | 'skipped' }>
   cached?: boolean
   note?: string
 }> {
@@ -89,6 +93,7 @@ async function doSearchLeads(input: SearchInput): Promise<{
   scrapedCount: number
   scoredAndFiltered: ScoredBusiness[]
   filter: { score_min: number; score_max: number }
+  sources_used: Array<{ name: string; raw_count: number; status: 'ok' | 'empty' | 'skipped' }>
   note?: string
 }> {
   const apifyToken = process.env.NUXT_APIFY_API_TOKEN
@@ -99,6 +104,7 @@ async function doSearchLeads(input: SearchInput): Promise<{
       scrapedCount: 0,
       scoredAndFiltered: [],
       filter: { score_min: input.score_min ?? 3, score_max: input.score_max ?? 7 },
+      sources_used: [],
       note: 'NUXT_APIFY_API_TOKEN not configured. Get one at apify.com → Settings → Integrations → Personal API tokens.',
     }
   }
@@ -107,23 +113,59 @@ async function doSearchLeads(input: SearchInput): Promise<{
   const scoreMin = input.score_min ?? 3
   const scoreMax = input.score_max ?? 7
 
-  // Apify Google Maps scraper — synchronous run-and-return
-  // Actor: compass/crawler-google-places (a.k.a. "Google Maps Scraper" by Compass)
-  // Docs: https://apify.com/compass/crawler-google-places
-  //
-  // PERFORMANCE TUNING:
-  // - scrapeContacts/includeImages/additionalInfo OFF — each one visits the place's
-  //   full GBP page individually. A 15-result scrape with these on takes 2-4 min.
-  //   With them off, list-only scrape finishes in 30-60s. Email enrichment happens
-  //   downstream in enrich_leads (website scrape + Hunter optional).
-  // - timeout=270 — Apify run-sync max is 300s. Locally fine; on Vercel Pro
-  //   functions cap at 60s so this code path is local-dev/n8n only for now.
+  // Parse the city + niche from the query for the secondary sources.
+  // Google Maps takes the full query string; Yelp/BBB need them split.
+  const parsed = parseQueryForSources(input.query)
+
+  // Fan out across all three sources in parallel.
+  // Each source returns its own ScrapedBusiness[]; we merge by domain.
+  const [gmapsResults, yelpResults, bbbResults] = await Promise.all([
+    searchGoogleMaps(input.query, maxResults).catch(() => [] as ScrapedBusiness[]),
+    parsed.niche && parsed.city
+      ? searchYelp({ niche: parsed.niche, city: parsed.city, max_results: maxResults }).catch(() => [] as ScrapedBusiness[])
+      : Promise.resolve([] as ScrapedBusiness[]),
+    parsed.niche && parsed.city
+      ? searchBbb({ niche: parsed.niche, city: parsed.city, max_results: maxResults }).catch(() => [] as ScrapedBusiness[])
+      : Promise.resolve([] as ScrapedBusiness[]),
+  ])
+
+  const sources_used: Array<{ name: string; raw_count: number; status: 'ok' | 'empty' | 'skipped' }> = [
+    { name: 'google_maps', raw_count: gmapsResults.length, status: gmapsResults.length > 0 ? 'ok' : 'empty' },
+    { name: 'yelp', raw_count: yelpResults.length, status: parsed.niche ? (yelpResults.length > 0 ? 'ok' : 'empty') : 'skipped' },
+    { name: 'bbb', raw_count: bbbResults.length, status: parsed.niche ? (bbbResults.length > 0 ? 'ok' : 'empty') : 'skipped' },
+  ]
+
+  // Merge across sources by domain. Keep the record with the most signal
+  // (highest review count) when duplicates appear. Union the sources array.
+  const merged = mergeBySources([
+    { source: 'google_maps', items: gmapsResults },
+    { source: 'yelp', items: yelpResults },
+    { source: 'bbb', items: bbbResults },
+  ])
+  const scraped = merged
+
+  return await applyScoringFilterAndPersist({
+    scraped,
+    query: input.query,
+    scoreMin,
+    scoreMax,
+    sources_used,
+  })
+}
+
+// =====================================================================
+// SOURCE 1: Google Maps via Apify (the original)
+// =====================================================================
+
+async function searchGoogleMaps(query: string, maxResults: number): Promise<ScrapedBusiness[]> {
+  const apifyToken = process.env.NUXT_APIFY_API_TOKEN
+  if (!apifyToken) return []
   const url = `https://api.apify.com/v2/acts/compass~crawler-google-places/run-sync-get-dataset-items?token=${apifyToken}&timeout=270`
   const res = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      searchStringsArray: [input.query],
+      searchStringsArray: [query],
       maxCrawledPlacesPerSearch: maxResults,
       language: 'en',
       countryCode: 'us',
@@ -135,30 +177,141 @@ async function doSearchLeads(input: SearchInput): Promise<{
       additionalInfo: false,
     }),
   })
-
   if (!res.ok) {
     const errText = await res.text()
     throw new Error(`Apify error ${res.status}: ${errText.slice(0, 300)}`)
   }
-
   const raw = await res.json() as Array<Record<string, unknown>>
-  const scraped = raw.map(normalizeApifyRecord)
+  return raw.map(normalizeApifyRecord)
+}
 
+// =====================================================================
+// MULTI-SOURCE MERGE + SCORE + PERSIST
+// =====================================================================
+
+interface SourceBucket {
+  source: string
+  items: ScrapedBusiness[]
+}
+
+/**
+ * Merge results from multiple sources by domain. When the same business
+ * appears in two sources, keep the record with the most signal (highest
+ * review count usually = most-maintained listing) and union the source
+ * provenance. Records without a domain are kept individually (no merge).
+ */
+function mergeBySources(buckets: SourceBucket[]): ScrapedBusiness[] {
+  const byDomain = new Map<string, { record: ScrapedBusiness; sources: Set<string> }>()
+  const noDomain: Array<{ record: ScrapedBusiness; sources: Set<string> }> = []
+  for (const bucket of buckets) {
+    for (const item of bucket.items) {
+      const d = normalizeDomain(item.domain || item.website)
+      if (!d) {
+        noDomain.push({ record: item, sources: new Set([bucket.source]) })
+        continue
+      }
+      const existing = byDomain.get(d)
+      if (!existing) {
+        byDomain.set(d, { record: item, sources: new Set([bucket.source]) })
+      } else {
+        existing.sources.add(bucket.source)
+        // Keep the record with more reviews (proxy for "most maintained")
+        if (item.reviews_count > existing.record.reviews_count) {
+          existing.record = item
+        }
+      }
+    }
+  }
+  return [...byDomain.values(), ...noDomain].map(e => e.record)
+}
+
+interface FilterPersistInput {
+  scraped: ScrapedBusiness[]
+  query: string
+  scoreMin: number
+  scoreMax: number
+  sources_used: Array<{ name: string; raw_count: number; status: 'ok' | 'empty' | 'skipped' }>
+}
+
+async function applyScoringFilterAndPersist(input: FilterPersistInput): Promise<{
+  asOf: string
+  query: string
+  scrapedCount: number
+  scoredAndFiltered: ScoredBusiness[]
+  filter: { score_min: number; score_max: number }
+  sources_used: Array<{ name: string; raw_count: number; status: 'ok' | 'empty' | 'skipped' }>
+  note?: string
+}> {
   // Filter junk + score
-  const filtered = scraped
+  const filtered = input.scraped
     .filter(b => b.website && !b.website.includes('facebook.com') && !b.website.includes('instagram.com'))
     .filter(b => b.reviews_count >= 10 && b.rating >= 3.8)
     .map(scoreOneGBP)
-    .filter(b => b.gbp_score >= scoreMin && b.gbp_score <= scoreMax)
-    .sort((a, b) => a.gbp_score - b.gbp_score) // weakest first
+    .filter(b => b.gbp_score >= input.scoreMin && b.gbp_score <= input.scoreMax)
+    .sort((a, b) => a.gbp_score - b.gbp_score)  // weakest first
+
+  // Persist every filtered result into the master lead DB (dedupe by domain).
+  // Best-effort — failures shouldn't break the search.
+  await Promise.all(filtered.map(async (b) => {
+    const domain = normalizeDomain(b.domain || b.website)
+    if (!domain) return
+    try {
+      // Sources for THIS business: figure out which buckets it came from by
+      // looking up which source's items it appeared in. The merge step dropped
+      // that detail, so we conservatively tag with all sources that returned
+      // anything — refinement later if needed.
+      const sourceList = input.sources_used
+        .filter(s => s.status === 'ok')
+        .map(s => ({ name: s.name, discovered_at: new Date().toISOString() }))
+      await upsertLead({
+        domain,
+        business_name: b.business_name,
+        city: b.city,
+        state: b.state,
+        niche: b.category,
+        phone: b.phone,
+        website: b.website,
+        gbp_url: b.gbp_url,
+        gbp_score: b.gbp_score,
+        category: b.category,
+        rating: b.rating,
+        reviews_count: b.reviews_count,
+        photo_count: b.photo_count,
+        sources: sourceList,
+      })
+      await recordInteraction(domain, {
+        type: 'scrape',
+        source: 'multi',
+        details: { gbp_score: b.gbp_score, query: input.query, sources: sourceList.map(s => s.name) },
+      })
+    } catch { /* swallow */ }
+  }))
 
   return {
     asOf: new Date().toISOString(),
     query: input.query,
-    scrapedCount: scraped.length,
+    scrapedCount: input.scraped.length,
     scoredAndFiltered: filtered,
-    filter: { score_min: scoreMin, score_max: scoreMax },
+    filter: { score_min: input.scoreMin, score_max: input.scoreMax },
+    sources_used: input.sources_used,
   }
+}
+
+/**
+ * Parse a free-form query like "roofers in Bartow FL" into structured niche +
+ * city for Yelp/BBB. If we can't parse, we return empty niche which causes
+ * those sources to be skipped (Google Maps still runs).
+ */
+function parseQueryForSources(query: string): { niche: string; city: string } {
+  // Patterns supported:
+  //   "X in Y FL"    → niche=X, city=Y
+  //   "X in Y"       → niche=X, city=Y
+  //   "Y X"          → niche=X, city=Y (less reliable)
+  const inMatch = query.match(/^(.+?)\s+in\s+(.+?)(?:\s+(?:FL|Florida))?$/i)
+  if (inMatch) {
+    return { niche: inMatch[1]!.trim(), city: inMatch[2]!.trim() }
+  }
+  return { niche: '', city: '' }
 }
 
 function normalizeApifyRecord(r: Record<string, unknown>): ScrapedBusiness {
@@ -285,6 +438,41 @@ export async function enrichLeads(leads: ScoredBusiness[]): Promise<{
     hunterKey && verifierKey ? 'paid' :
     !hunterKey && !verifierKey ? 'cheap' :
     'mixed'
+
+  // Persist enrichment back to lead DB — every email + verification update.
+  await Promise.all(results.map(async (r) => {
+    const domain = normalizeDomain(r.domain || r.website)
+    if (!domain) return
+    try {
+      if (r.contact_email) {
+        await upsertLead({
+          domain,
+          business_name: r.business_name,
+          emails: [{
+            value: r.contact_email,
+            source: hunterKey ? 'hunter' : 'website_scrape',
+            verification: r.email_verification ?? 'unknown',
+            last_verified_at: new Date().toISOString(),
+          }],
+          ...(r.contact_first_name || r.contact_last_name ? {
+            decision_maker: {
+              first_name: r.contact_first_name ?? '',
+              last_name: r.contact_last_name ?? '',
+              ...(r.contact_position ? { title: r.contact_position } : {}),
+              source: hunterKey ? 'hunter' : 'manual',
+              confidence: hunterKey ? 0.7 : 0.4,
+            },
+          } : {}),
+          status: r.email_verification === 'ok' ? 'enriched' : 'new',
+        })
+        await recordInteraction(domain, {
+          type: 'enrich',
+          source: mode,
+          details: { email: r.contact_email, verification: r.email_verification },
+        })
+      }
+    } catch { /* swallow */ }
+  }))
 
   const stats = {
     input: leads.length,

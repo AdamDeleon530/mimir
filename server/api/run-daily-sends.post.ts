@@ -9,6 +9,8 @@
 import { findDueLeads, recordSend, type SequencedLead } from '~/server/utils/sequence-state'
 import { pickNextInbox, sendEmail, inboxesConfigured } from '~/server/utils/email-sender'
 import { POLK_RELAXED_V1, renderTemplate } from '~/server/utils/sequence-templates'
+import { isSuppressed, normalizeDomain } from '~/server/utils/lead-db'
+import { pickVariantForSend, recordVariantAssignment } from '~/server/utils/ab-testing'
 
 export default defineEventHandler(async (event) => {
   // Auth: either user session OR cron secret
@@ -27,6 +29,14 @@ export default defineEventHandler(async (event) => {
   const results: Array<{ email: string; step: number; status: string; inbox?: string; error?: string }> = []
 
   for (const lead of due) {
+    // Last-line suppression check — protects deliverability even if something
+    // slipped past the queue guard.
+    const leadDomain = normalizeDomain((lead.email.split('@')[1] ?? ''))
+    if (leadDomain && await isSuppressed(leadDomain)) {
+      results.push({ email: lead.email, step: lead.current_step + 1, status: 'skipped — domain on suppression list' })
+      continue
+    }
+
     const inbox = await pickNextInbox()
     if (!inbox) {
       results.push({ email: lead.email, step: lead.current_step + 1, status: 'skipped — all inboxes at daily cap' })
@@ -49,8 +59,21 @@ export default defineEventHandler(async (event) => {
       first_line: lead.first_line,
       physical_address: process.env.NUXT_PHYSICAL_ADDRESS ?? '',
     }
-    const subject = renderTemplate(template.subject, mergeVars)
+    // A/B testing: ask the variant picker for a subject. Falls back to the
+    // template subject if no variants for this step or if picker fails.
+    const variant = await pickVariantForSend(nextStep, lead.city, lead.niche).catch(() => null)
+    const subjectTemplate = variant?.subject ?? template.subject
+    const subject = renderTemplate(subjectTemplate, mergeVars)
     const body = renderTemplate(template.body, mergeVars)
+    if (variant) {
+      await recordVariantAssignment({
+        email: lead.email,
+        step: nextStep,
+        variant_id: variant.id,
+        city: lead.city,
+        niche: lead.niche,
+      }).catch(() => { /* best-effort */ })
+    }
 
     const sendResult = await sendEmail({
       from: inbox,

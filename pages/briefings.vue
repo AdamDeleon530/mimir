@@ -42,122 +42,213 @@ function timeAgo(iso: string): string {
 </script>
 
 <template>
-  <div class="briefings">
-    <header class="briefings__header">
-      <NuxtLink to="/dashboard" class="briefings__back">← back to dashboard</NuxtLink>
-      <h1 class="briefings__title"><span class="briefings__rune">ᚾ</span> Daily briefings</h1>
-      <button @click="generateNow" :disabled="generating" class="briefings__gen">
+  <div class="page">
+    <header class="page-header">
+      <NuxtLink to="/dashboard" class="back-link">← dashboard</NuxtLink>
+      <h1 class="page-title">
+        <span class="rune" aria-hidden="true">ᚾ</span> Daily Briefings
+      </h1>
+      <button
+        @click="generateNow"
+        :disabled="generating"
+        class="action-btn"
+        :aria-busy="generating"
+      >
         {{ generating ? 'consulting…' : 'generate now' }}
       </button>
     </header>
 
-    <div v-if="pending && !data" class="briefings__loading">loading the log…</div>
-    <div v-else-if="!data?.briefings?.length" class="briefings__empty">
-      no briefings yet. the watch begins on the first weekday morning.
-    </div>
+    <main class="page-content">
+      <div v-if="pending && !data" class="state-empty">loading the log…</div>
+      <div v-else-if="!data?.briefings?.length" class="state-empty">
+        no briefings yet. the watch begins on the first weekday morning.
+      </div>
 
-    <ol v-else class="brief-list">
-      <li v-for="b in data.briefings" :key="b.id" class="brief">
-        <header class="brief__head">
-          <span class="brief__date">{{ b.date_local }}</span>
-          <span class="brief__when">{{ timeAgo(b.generated_at) }}</span>
-        </header>
-        <p class="brief__body">{{ b.body }}</p>
-        <footer class="brief__foot">
-          <span>queue {{ b.facts.queue.total }} · active {{ b.facts.queue.active }} · due today {{ b.facts.queue.due_today }}</span>
-          <span v-if="b.tokens_used">{{ b.tokens_used.input + b.tokens_used.output }} tokens</span>
-        </footer>
-      </li>
-    </ol>
+      <ol v-else class="brief-list">
+        <li v-for="b in data.briefings" :key="b.id" class="brief">
+          <header class="brief__head">
+            <span class="brief__date">{{ b.date_local }}</span>
+            <span class="brief__when">{{ timeAgo(b.generated_at) }}</span>
+          </header>
+          <p class="brief__body">{{ b.body }}</p>
+          <footer class="brief__foot">
+            <span>
+              queue {{ b.facts.queue.total }}
+              · active {{ b.facts.queue.active }}
+              · due today {{ b.facts.queue.due_today }}
+            </span>
+            <span v-if="b.tokens_used">{{ b.tokens_used.input + b.tokens_used.output }} tokens</span>
+          </footer>
+        </li>
+      </ol>
+    </main>
   </div>
 </template>
 
 <style scoped>
-.briefings {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 32px 24px 80px;
-  color: #e7e5dc;
+.page {
+  min-height: 100dvh;
+  background: #0F1B2D;
+  color: #F5F2EC;
   font-family: 'Inter', system-ui, sans-serif;
 }
-.briefings__header {
+
+/* ── Header ── */
+.page-header {
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 16px;
-  margin-bottom: 32px;
+  padding: 16px 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  background: linear-gradient(180deg, rgba(255,255,255,0.015), transparent);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  backdrop-filter: blur(12px);
 }
-.briefings__back {
-  color: #c9a64a;
+
+.back-link {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: rgba(245,242,236,0.38);
   text-decoration: none;
-  font-size: 13px;
-  opacity: 0.8;
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: 1px solid transparent;
+  transition: color 150ms, border-color 150ms, background 150ms;
+  white-space: nowrap;
 }
-.briefings__back:hover { opacity: 1; }
-.briefings__title {
-  font-family: 'Fraunces', serif;
+.back-link:hover {
+  color: #B87333;
+  border-color: rgba(184,115,51,0.2);
+  background: rgba(184,115,51,0.05);
+}
+
+.page-title {
+  font-family: 'Fraunces', Georgia, serif;
   font-weight: 500;
-  font-size: 24px;
-  margin: 0;
-  text-align: center;
+  font-size: 20px;
   letter-spacing: 0.05em;
+  text-align: center;
+  margin: 0;
+  color: #F5F2EC;
 }
-.briefings__rune { color: #c9a64a; margin-right: 6px; }
-.briefings__gen {
+
+.rune {
+  color: #B87333;
+  margin-right: 4px;
+}
+
+.action-btn {
   background: transparent;
-  color: #c9a64a;
-  border: 1px solid rgba(201, 166, 74, 0.35);
+  color: #B87333;
+  border: 1px solid rgba(184,115,51,0.3);
   padding: 6px 14px;
-  border-radius: 4px;
-  font-size: 12px;
-  letter-spacing: 0.06em;
+  border-radius: 5px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
-  font-family: inherit;
+  white-space: nowrap;
+  transition: background 150ms, border-color 150ms;
 }
-.briefings__gen:hover:not(:disabled) {
-  background: rgba(201, 166, 74, 0.08);
+.action-btn:hover:not(:disabled) {
+  background: rgba(184,115,51,0.08);
+  border-color: rgba(184,115,51,0.5);
 }
-.briefings__gen:disabled { opacity: 0.4; cursor: not-allowed; }
+.action-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-.briefings__loading,
-.briefings__empty {
-  color: rgba(231, 229, 220, 0.5);
+/* ── Content ── */
+.page-content {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 32px 24px 80px;
+}
+
+/* ── States ── */
+.state-empty {
+  color: rgba(245,242,236,0.35);
   text-align: center;
   padding: 80px 0;
   font-style: italic;
+  font-size: 14px;
 }
 
-.brief-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 24px; }
-.brief {
-  background: rgba(201, 166, 74, 0.03);
-  border: 1px solid rgba(201, 166, 74, 0.15);
-  border-radius: 6px;
-  padding: 20px 22px;
+/* ── Briefing list ── */
+.brief-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
+
+.brief {
+  position: relative;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 8px;
+  padding: 20px 22px;
+  overflow: hidden;
+}
+.brief::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 28px; height: 1px;
+  background: #B87333;
+  box-shadow: 0 0 6px rgba(184,115,51,0.35);
+}
+
 .brief__head {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: 12px;
-  font-size: 12px;
-  color: rgba(231, 229, 220, 0.55);
+  margin-bottom: 14px;
 }
-.brief__date { font-family: 'Fraunces', serif; font-size: 15px; color: #d4b25c; }
+
+.brief__date {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 15px;
+  color: #B87333;
+}
+
+.brief__when {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: rgba(245,242,236,0.35);
+}
+
 .brief__body {
   margin: 0;
-  font-size: 15px;
-  line-height: 1.6;
+  font-size: 14px;
+  line-height: 1.7;
   white-space: pre-wrap;
+  color: rgba(245,242,236,0.82);
 }
+
 .brief__foot {
-  margin-top: 14px;
-  padding-top: 12px;
-  border-top: 1px solid rgba(201, 166, 74, 0.1);
   display: flex;
   justify-content: space-between;
-  font-size: 11px;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,0.05);
   font-family: 'JetBrains Mono', monospace;
-  color: rgba(231, 229, 220, 0.4);
+  font-size: 10px;
+  color: rgba(245,242,236,0.28);
+}
+
+@media (max-width: 640px) {
+  .page-header { padding: 12px 16px; }
+  .page-content { padding: 24px 16px 60px; }
+  .page-title { font-size: 17px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition-duration: 0ms !important; }
 }
 </style>

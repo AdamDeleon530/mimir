@@ -1,0 +1,3648 @@
+{
+  "mimir:cost:log:2026-06-15": [
+    {
+      "at": "2026-06-15T03:30:27.273Z",
+      "model": "claude-sonnet-4-6",
+      "input_tokens": 7652,
+      "output_tokens": 118,
+      "usd": 0.024726,
+      "caller": "chat"
+    },
+    {
+      "at": "2026-06-15T03:31:26.669Z",
+      "model": "claude-sonnet-4-6",
+      "input_tokens": 8818,
+      "output_tokens": 401,
+      "usd": 0.032469,
+      "caller": "chat"
+    },
+    {
+      "at": "2026-06-15T03:31:34.141Z",
+      "model": "claude-sonnet-4-6",
+      "input_tokens": 9615,
+      "output_tokens": 317,
+      "usd": 0.033600000000000005,
+      "caller": "chat"
+    },
+    {
+      "at": "2026-06-15T03:48:38.043Z",
+      "model": "claude-sonnet-4-6",
+      "input_tokens": 8103,
+      "output_tokens": 58,
+      "usd": 0.025179000000000003,
+      "caller": "chat"
+    },
+    {
+      "at": "2026-06-15T03:48:42.231Z",
+      "model": "claude-sonnet-4-6",
+      "input_tokens": 8285,
+      "output_tokens": 123,
+      "usd": 0.0267,
+      "caller": "chat"
+    },
+    {
+      "at": "2026-06-15T03:59:02.252Z",
+      "model": "claude-sonnet-4-6",
+      "input_tokens": 9280,
+      "output_tokens": 37,
+      "usd": 0.028395,
+      "caller": "chat"
+    },
+    {
+      "at": "2026-06-15T03:59:04.628Z",
+      "model": "claude-sonnet-4-6",
+      "input_tokens": 12025,
+      "output_tokens": 49,
+      "usd": 0.036809999999999996,
+      "caller": "chat"
+    },
+    {
+      "at": "2026-06-15T03:59:18.208Z",
+      "model": "claude-sonnet-4-6",
+      "input_tokens": 9341,
+      "output_tokens": 83,
+      "usd": 0.029268,
+      "caller": "chat"
+    },
+    {
+      "at": "2026-06-15T04:00:09.619Z",
+      "model": "claude-sonnet-4-6",
+      "input_tokens": 9593,
+      "output_tokens": 195,
+      "usd": 0.031704,
+      "caller": "chat"
+    },
+    {
+      "at": "2026-06-15T04:00:48.362Z",
+      "model": "claude-sonnet-4-6",
+      "input_tokens": 9545,
+      "output_tokens": 58,
+      "usd": 0.029505,
+      "caller": "chat"
+    },
+    {
+      "at": "2026-06-15T04:00:51.310Z",
+      "model": "claude-sonnet-4-6",
+      "input_tokens": 9627,
+      "output_tokens": 63,
+      "usd": 0.029826000000000002,
+      "caller": "chat"
+    },
+    {
+      "at": "2026-06-15T04:01:12.194Z",
+      "model": "claude-sonnet-4-6",
+      "input_tokens": 9617,
+      "output_tokens": 37,
+      "usd": 0.029406,
+      "caller": "chat"
+    },
+    {
+      "at": "2026-06-15T04:01:15.649Z",
+      "model": "claude-sonnet-4-6",
+      "input_tokens": 12513,
+      "output_tokens": 69,
+      "usd": 0.038574000000000004,
+      "caller": "chat"
+    }
+  ],
+  "mimir:cost:summary:2026-06-15": {
+    "date": "2026-06-15",
+    "total_usd": 0.396162,
+    "total_input_tokens": 124014,
+    "total_output_tokens": 1608,
+    "call_count": 13,
+    "by_model": {
+      "claude-sonnet-4-6": {
+        "calls": 13,
+        "usd": 0.396162
+      }
+    }
+  },
+  "mimir:leads:16a30f7": {
+    "domain": "quickroofing.com",
+    "business_name": "Quick Roofing - Central FL",
+    "city": "Lakeland",
+    "state": "Florida",
+    "niche": "Roofing contractor",
+    "phone": "(863) 201-6025",
+    "website": "http://www.quickroofing.com/",
+    "emails": [],
+    "gbp_url": "https://www.google.com/maps/search/?api=1&query=Quick%20Roofing%20-%20Central%20FL&query_place_id=ChIJj4gRz5453YgROETVTwWgdyI",
+    "gbp_score": 7,
+    "category": "Roofing contractor",
+    "rating": 4.5,
+    "reviews_count": 46,
+    "photo_count": 45,
+    "status": "new",
+    "dnc": false,
+    "sources": [
+      {
+        "name": "google_maps",
+        "discovered_at": "2026-06-15T03:31:20.938Z"
+      }
+    ],
+    "first_seen_at": "2026-06-15T03:31:20.938Z",
+    "last_updated_at": "2026-06-15T03:31:20.938Z"
+  },
+  "mimir:leads:fjqrdz": {
+    "domain": "gullettroofing.com",
+    "business_name": "Gullett Roofing",
+    "city": "Lakeland",
+    "state": "Florida",
+    "niche": "Roofing contractor",
+    "phone": "(863) 412-2821",
+    "website": "http://www.gullettroofing.com/",
+    "emails": [],
+    "gbp_url": "https://www.google.com/maps/search/?api=1&query=Gullett%20Roofing&query_place_id=ChIJdRXew4RH3YgRbP5qENk6HEA",
+    "gbp_score": 7,
+    "category": "Roofing contractor",
+    "rating": 5,
+    "reviews_count": 196,
+    "photo_count": 15,
+    "status": "new",
+    "dnc": false,
+    "sources": [
+      {
+        "name": "google_maps",
+        "discovered_at": "2026-06-15T03:31:20.939Z"
+      }
+    ],
+    "first_seen_at": "2026-06-15T03:31:20.939Z",
+    "last_updated_at": "2026-06-15T03:31:20.939Z"
+  },
+  "mimir:leads:fup9y5": {
+    "domain": "priorityroofs.com",
+    "business_name": "Priority Roofing",
+    "city": "Lakeland",
+    "state": "Florida",
+    "niche": "Roofing contractor",
+    "phone": "(863) 701-4746",
+    "website": "https://priorityroofs.com/location/lakeland/",
+    "emails": [],
+    "gbp_url": "https://www.google.com/maps/search/?api=1&query=Priority%20Roofing&query_place_id=ChIJT8mR1ok53YgRw2egCUXhGik",
+    "gbp_score": 7,
+    "category": "Roofing contractor",
+    "rating": 5,
+    "reviews_count": 116,
+    "photo_count": 12,
+    "status": "new",
+    "dnc": false,
+    "sources": [
+      {
+        "name": "google_maps",
+        "discovered_at": "2026-06-15T03:31:20.939Z"
+      }
+    ],
+    "first_seen_at": "2026-06-15T03:31:20.939Z",
+    "last_updated_at": "2026-06-15T03:31:20.939Z"
+  },
+  "mimir:leads:1m2fevz": {
+    "domain": "fivepointsroofingfl.com",
+    "business_name": "Five Points Roofing",
+    "city": "Lakeland",
+    "state": "Florida",
+    "niche": "Roofing contractor",
+    "phone": "(863) 660-5834",
+    "website": "https://fivepointsroofingfl.com/",
+    "emails": [],
+    "gbp_url": "https://www.google.com/maps/search/?api=1&query=Five%20Points%20Roofing&query_place_id=ChIJx64HM7fcmCERr32qJoXMh-0",
+    "gbp_score": 7,
+    "category": "Roofing contractor",
+    "rating": 5,
+    "reviews_count": 65,
+    "photo_count": 19,
+    "status": "new",
+    "dnc": false,
+    "sources": [
+      {
+        "name": "google_maps",
+        "discovered_at": "2026-06-15T03:31:20.939Z"
+      }
+    ],
+    "first_seen_at": "2026-06-15T03:31:20.939Z",
+    "last_updated_at": "2026-06-15T03:31:20.939Z"
+  },
+  "mimir:leads:index": {
+    "fivepointsroofingfl.com": {
+      "domain": "fivepointsroofingfl.com",
+      "business_name": "Five Points Roofing",
+      "city": "Lakeland",
+      "niche": "Roofing contractor",
+      "status": "new",
+      "dnc": false,
+      "last_updated_at": "2026-06-15T03:31:20.939Z"
+    },
+    "drieslerconstructions.com": {
+      "domain": "drieslerconstructions.com",
+      "business_name": "Driesler Construction",
+      "city": "",
+      "niche": "Roofing contractor",
+      "status": "new",
+      "dnc": false,
+      "last_updated_at": "2026-06-15T04:00:01.731Z",
+      "quality_total": 35
+    },
+    "floridaroofer.net": {
+      "domain": "floridaroofer.net",
+      "business_name": "Great Florida Roofing LLC",
+      "city": "",
+      "niche": "Roofing contractor",
+      "status": "new",
+      "dnc": false,
+      "last_updated_at": "2026-06-15T04:00:01.122Z",
+      "quality_total": 30
+    },
+    "abcanroofing.com": {
+      "domain": "abcanroofing.com",
+      "business_name": "ABCAN ROOFING",
+      "city": "",
+      "niche": "Roofing contractor",
+      "status": "new",
+      "dnc": false,
+      "last_updated_at": "2026-06-15T04:00:01.208Z",
+      "quality_total": 28
+    },
+    "swancityroof.com": {
+      "domain": "swancityroof.com",
+      "business_name": "Swan City Roofing",
+      "city": "",
+      "niche": "Roofing contractor",
+      "status": "new",
+      "dnc": false,
+      "last_updated_at": "2026-06-15T04:00:01.287Z",
+      "quality_total": 35
+    },
+    "metalroofsupply.com": {
+      "domain": "metalroofsupply.com",
+      "business_name": "Metal Roof Supply",
+      "city": "Bartow",
+      "niche": "Roofing supply store",
+      "status": "new",
+      "dnc": false,
+      "last_updated_at": "2026-06-15T04:00:01.370Z",
+      "quality_total": 39
+    },
+    "woodsroofinglakeland.com": {
+      "domain": "woodsroofinglakeland.com",
+      "business_name": "Wood's Roofing & Remodeling, LLC",
+      "city": "Bartow",
+      "niche": "Roofing contractor",
+      "status": "new",
+      "dnc": false,
+      "last_updated_at": "2026-06-15T04:00:01.445Z",
+      "quality_total": 38
+    },
+    "gilcoroofing.com": {
+      "domain": "gilcoroofing.com",
+      "business_name": "Gilco Roofing",
+      "city": "",
+      "niche": "Roofing contractor",
+      "status": "new",
+      "dnc": false,
+      "last_updated_at": "2026-06-15T04:00:01.527Z",
+      "quality_total": 30
+    },
+    "americanroofing.construction": {
+      "domain": "americanroofing.construction",
+      "business_name": "American Roofing and Construction FL LLC",
+      "city": "Winter Haven",
+      "niche": "Roofing contractor",
+      "status": "enriched",
+      "dnc": false,
+      "last_updated_at": "2026-06-15T04:00:03.976Z",
+      "quality_total": 41
+    },
+    "true-builders.com": {
+      "domain": "true-builders.com",
+      "business_name": "True Builders Inc.",
+      "city": "Lakeland",
+      "niche": "Construction company",
+      "status": "enriched",
+      "dnc": false,
+      "last_updated_at": "2026-06-15T04:21:28.152Z",
+      "quality_total": 54
+    },
+    "sharrettconstruction.com": {
+      "domain": "sharrettconstruction.com",
+      "business_name": "Sharrett Construction",
+      "city": "Lakeland",
+      "niche": "General contractor",
+      "status": "new",
+      "dnc": false,
+      "last_updated_at": "2026-06-15T04:20:32.547Z",
+      "quality_total": 19
+    },
+    "preconflorida.com": {
+      "domain": "preconflorida.com",
+      "business_name": "Pre-Con Construction of Florida",
+      "city": "Lakeland",
+      "niche": "General contractor",
+      "status": "new",
+      "dnc": false,
+      "last_updated_at": "2026-06-15T04:20:32.626Z",
+      "quality_total": 24
+    },
+    "hcinc.net": {
+      "domain": "hcinc.net",
+      "business_name": "Henkelman Construction Inc.",
+      "city": "Lakeland",
+      "niche": "General contractor",
+      "status": "new",
+      "dnc": false,
+      "last_updated_at": "2026-06-15T04:20:32.767Z",
+      "quality_total": 24
+    },
+    "donaldsonconstructionco.com": {
+      "domain": "donaldsonconstructionco.com",
+      "business_name": "Donaldson Construction Company, LLC",
+      "city": "Lakeland",
+      "niche": "Concrete contractor",
+      "status": "new",
+      "dnc": false,
+      "last_updated_at": "2026-06-15T04:20:32.886Z",
+      "quality_total": 27
+    },
+    "marcobay.com": {
+      "domain": "marcobay.com",
+      "business_name": "Marcobay Construction, Inc.",
+      "city": "Lakeland",
+      "niche": "General contractor",
+      "status": "new",
+      "dnc": false,
+      "last_updated_at": "2026-06-15T04:20:33.003Z",
+      "quality_total": 25
+    },
+    "oldflconstruction.com": {
+      "domain": "oldflconstruction.com",
+      "business_name": "Old Florida Construction and Remodeling LLC",
+      "city": "",
+      "niche": "General contractor",
+      "status": "new",
+      "dnc": false,
+      "last_updated_at": "2026-06-15T04:20:33.083Z",
+      "quality_total": 31
+    },
+    "evangelistoconstruction.com": {
+      "domain": "evangelistoconstruction.com",
+      "business_name": "Evangelisto Construction",
+      "city": "Lakeland",
+      "niche": "Kitchen remodeler",
+      "status": "enriched",
+      "dnc": false,
+      "last_updated_at": "2026-06-15T04:21:28.428Z",
+      "quality_total": 43
+    },
+    "kaplanremodeling.com": {
+      "domain": "kaplanremodeling.com",
+      "business_name": "Kaplan Remodeling",
+      "city": "",
+      "niche": "General contractor",
+      "status": "enriched",
+      "dnc": false,
+      "last_updated_at": "2026-06-15T04:21:36.717Z",
+      "quality_total": 43
+    },
+    "burnsflooringanddesign.com": {
+      "domain": "burnsflooringanddesign.com",
+      "business_name": "Burns Flooring & Kitchen Design",
+      "city": "Lakeland",
+      "niche": "Kitchen remodeler",
+      "status": "new",
+      "dnc": false,
+      "last_updated_at": "2026-06-15T04:21:27.753Z",
+      "quality_total": 26
+    },
+    "wallergroup.com": {
+      "domain": "wallergroup.com",
+      "business_name": "Waller Construction and Design Center",
+      "city": "Lakeland",
+      "niche": "General contractor",
+      "status": "new",
+      "dnc": false,
+      "last_updated_at": "2026-06-15T04:21:27.832Z",
+      "quality_total": 31
+    },
+    "aaaremodeling.biz": {
+      "domain": "aaaremodeling.biz",
+      "business_name": "AAA Remodeling of Central Florida",
+      "city": "",
+      "niche": "Bathroom remodeler",
+      "status": "new",
+      "dnc": false,
+      "last_updated_at": "2026-06-15T04:21:27.913Z",
+      "quality_total": 41
+    },
+    "apremodelingandrenovation.com": {
+      "domain": "apremodelingandrenovation.com",
+      "business_name": "AP Remodeling and Renovation LLC",
+      "city": "",
+      "niche": "Construction company",
+      "status": "new",
+      "dnc": false,
+      "last_updated_at": "2026-06-15T04:21:27.992Z",
+      "quality_total": 35
+    },
+    "valueproremodeling.com": {
+      "domain": "valueproremodeling.com",
+      "business_name": "ValuePro Remodeling",
+      "city": "Lakeland",
+      "niche": "General contractor",
+      "status": "new",
+      "dnc": false,
+      "last_updated_at": "2026-06-15T04:21:28.071Z",
+      "quality_total": 32
+    },
+    "ckblakeland.com": {
+      "domain": "ckblakeland.com",
+      "business_name": "Complete Kitchen & Bath",
+      "city": "Lakeland",
+      "niche": "Kitchen remodeler",
+      "status": "new",
+      "dnc": false,
+      "last_updated_at": "2026-06-15T04:21:28.229Z",
+      "quality_total": 44
+    },
+    "floridakitchenbath.com": {
+      "domain": "floridakitchenbath.com",
+      "business_name": "Florida Kitchen And Bath",
+      "city": "Lakeland",
+      "niche": "Kitchen remodeler",
+      "status": "new",
+      "dnc": false,
+      "last_updated_at": "2026-06-15T04:21:28.307Z",
+      "quality_total": 31
+    }
+  },
+  "mimir:leads:dnc": [],
+  "mimir:leads:16a30f7:events": [
+    {
+      "at": "2026-06-15T03:31:20.953Z",
+      "type": "scrape",
+      "source": "google_maps",
+      "details": {
+        "gbp_score": 7,
+        "query": "roofers in Lakeland FL"
+      }
+    }
+  ],
+  "mimir:leads:fjqrdz:events": [
+    {
+      "at": "2026-06-15T03:31:20.954Z",
+      "type": "scrape",
+      "source": "google_maps",
+      "details": {
+        "gbp_score": 7,
+        "query": "roofers in Lakeland FL"
+      }
+    }
+  ],
+  "mimir:leads:fup9y5:events": [
+    {
+      "at": "2026-06-15T03:31:20.957Z",
+      "type": "scrape",
+      "source": "google_maps",
+      "details": {
+        "gbp_score": 7,
+        "query": "roofers in Lakeland FL"
+      }
+    }
+  ],
+  "mimir:leads:1m2fevz:events": [
+    {
+      "at": "2026-06-15T03:31:20.959Z",
+      "type": "scrape",
+      "source": "google_maps",
+      "details": {
+        "gbp_score": 7,
+        "query": "roofers in Lakeland FL"
+      }
+    }
+  ],
+  "mimir:search:1anh1gh": {
+    "asOf": "2026-06-15T03:31:20.979Z",
+    "query": "roofers in Lakeland FL",
+    "scrapedCount": 15,
+    "scoredAndFiltered": [
+      {
+        "business_name": "Quick Roofing - Central FL",
+        "address": "3624 DMG Dr, Lakeland, FL 33811",
+        "city": "Lakeland",
+        "state": "Florida",
+        "phone": "(863) 201-6025",
+        "website": "http://www.quickroofing.com/",
+        "domain": "quickroofing.com",
+        "category": "Roofing contractor",
+        "rating": 4.5,
+        "reviews_count": 46,
+        "photo_count": 45,
+        "categories_count": 1,
+        "has_recent_posts": false,
+        "gbp_url": "https://www.google.com/maps/search/?api=1&query=Quick%20Roofing%20-%20Central%20FL&query_place_id=ChIJj4gRz5453YgROETVTwWgdyI",
+        "place_id": "ChIJj4gRz5453YgROETVTwWgdyI",
+        "gbp_score": 7,
+        "score_breakdown": {
+          "photos": 2,
+          "reviews": 1,
+          "rating": 2,
+          "website": 2,
+          "categories": 0
+        }
+      },
+      {
+        "business_name": "Gullett Roofing",
+        "address": "535 Bracey Rd, Lakeland, FL 33809",
+        "city": "Lakeland",
+        "state": "Florida",
+        "phone": "(863) 412-2821",
+        "website": "http://www.gullettroofing.com/",
+        "domain": "gullettroofing.com",
+        "category": "Roofing contractor",
+        "rating": 5,
+        "reviews_count": 196,
+        "photo_count": 15,
+        "categories_count": 1,
+        "has_recent_posts": false,
+        "gbp_url": "https://www.google.com/maps/search/?api=1&query=Gullett%20Roofing&query_place_id=ChIJdRXew4RH3YgRbP5qENk6HEA",
+        "place_id": "ChIJdRXew4RH3YgRbP5qENk6HEA",
+        "gbp_score": 7,
+        "score_breakdown": {
+          "photos": 1,
+          "reviews": 2,
+          "rating": 2,
+          "website": 2,
+          "categories": 0
+        }
+      },
+      {
+        "business_name": "Priority Roofing",
+        "address": "4460 Florida National Dr Suite 4460-2, Lakeland, FL 33813",
+        "city": "Lakeland",
+        "state": "Florida",
+        "phone": "(863) 701-4746",
+        "website": "https://priorityroofs.com/location/lakeland/",
+        "domain": "priorityroofs.com",
+        "category": "Roofing contractor",
+        "rating": 5,
+        "reviews_count": 116,
+        "photo_count": 12,
+        "categories_count": 1,
+        "has_recent_posts": false,
+        "gbp_url": "https://www.google.com/maps/search/?api=1&query=Priority%20Roofing&query_place_id=ChIJT8mR1ok53YgRw2egCUXhGik",
+        "place_id": "ChIJT8mR1ok53YgRw2egCUXhGik",
+        "gbp_score": 7,
+        "score_breakdown": {
+          "photos": 1,
+          "reviews": 2,
+          "rating": 2,
+          "website": 2,
+          "categories": 0
+        }
+      },
+      {
+        "business_name": "Five Points Roofing",
+        "address": "2587 Colonel Ford Dr, Lakeland, FL 33813",
+        "city": "Lakeland",
+        "state": "Florida",
+        "phone": "(863) 660-5834",
+        "website": "https://fivepointsroofingfl.com/",
+        "domain": "fivepointsroofingfl.com",
+        "category": "Roofing contractor",
+        "rating": 5,
+        "reviews_count": 65,
+        "photo_count": 19,
+        "categories_count": 1,
+        "has_recent_posts": false,
+        "gbp_url": "https://www.google.com/maps/search/?api=1&query=Five%20Points%20Roofing&query_place_id=ChIJx64HM7fcmCERr32qJoXMh-0",
+        "place_id": "ChIJx64HM7fcmCERr32qJoXMh-0",
+        "gbp_score": 7,
+        "score_breakdown": {
+          "photos": 1,
+          "reviews": 2,
+          "rating": 2,
+          "website": 2,
+          "categories": 0
+        }
+      }
+    ],
+    "filter": {
+      "score_min": 3,
+      "score_max": 7
+    }
+  },
+  "mimir:conversation:z9iftk": [
+    {
+      "role": "user",
+      "content": "find me 3 roofers in lakeland",
+      "at": "2026-06-15T03:31:34.144Z"
+    },
+    {
+      "role": "assistant",
+      "content": "License snapshot has 0 records — it's empty. Can't verify any of the 4. The snapshot was generated 2026-06-13 but holds no contractor data. Worth running `pnpm refresh-dbpr` to repopulate it before trusting these checks.\n\nThat said, here's what we've got:\n\n| # | Business | GBP Score | Phone | Notes |\n|---|----------|-----------|-------|-------|\n| 1 | **Gullett Roofing** | 7/10 | (863) 412-2821 | 196 reviews, 5★ — low photo count (15) |\n| 2 | **Five Points Roofing** | 7/10 | (863) 660-5834 | 65 reviews, 5★ — low photo count (19) |\n| 3 | **Priority Roofing** | 7/10 | (863) 701-4746 | 116 reviews, 5★ — low photo count (12) |\n\nAll three are strong on reviews but thin on photos and categories — the GBP gap we can own. Quick Roofing is a regional chain; I'd deprioritize them.\n\nLicense status is unconfirmed due to the empty snapshot. Want to proceed to enrichment anyway, or sort the DBPR data first?",
+      "at": "2026-06-15T03:31:34.144Z"
+    }
+  ],
+  "mimir:conversation:1wm1kpt": [
+    {
+      "role": "user",
+      "content": "Validate License CBC015061",
+      "at": "2026-06-15T03:48:42.235Z"
+    },
+    {
+      "role": "assistant",
+      "content": "Clean result.\n\n**CBC015061 — Sam A. Cracchiolo Jr.**\n- **Class:** CBC (Building Contractor)\n- **Status:** Active\n- **Tenure:** 46 years (licensed since January 1980)\n- **Expires:** August 31, 2028\n- **Discipline history:** None\n\n46 years, zero complaints. That's a contractor who's been doing something right. If this is a lead, he's worth a thoughtful approach — someone that established won't be moved by a generic pitch.",
+      "at": "2026-06-15T03:48:42.235Z"
+    },
+    {
+      "role": "user",
+      "content": "What's the coverage status?",
+      "at": "2026-06-15T03:59:04.635Z"
+    },
+    {
+      "role": "assistant",
+      "content": "56 cells, all fresh. Zero scraped, zero contacted. The matrix is clean — untouched across every city and niche.\n\nDay one of the hunt. Pick a cell and we'll start filling it.",
+      "at": "2026-06-15T03:59:04.635Z"
+    },
+    {
+      "role": "user",
+      "content": "Run Bartow roofers.",
+      "at": "2026-06-15T04:00:09.625Z"
+    },
+    {
+      "role": "assistant",
+      "content": "Here's where the cell landed:\n\n- **Found:** 8 roofers scraped from Maps\n- **License check:** 8 of 8 active — clean sweep\n- **Enriched:** 3 had findable emails\n- **Would-queue:** 0 — all 3 fell below the quality threshold (≥60)\n- **Skipped:** 3 low-quality, 5 unenriched (no email found)\n\nThe licensed count is encouraging. The enrichment hit rate is rough — 3 of 8 — and none of the three cleared the quality gate. Bartow roofers are either thin on web presence or the contacts just aren't surfacing.\n\nWant me to pull the full lead records for the 3 enriched ones so you can eyeball them manually? You may see something the score doesn't.",
+      "at": "2026-06-15T04:00:09.625Z"
+    },
+    {
+      "role": "user",
+      "content": "Show me the top leads.",
+      "at": "2026-06-15T04:00:51.313Z"
+    },
+    {
+      "role": "assistant",
+      "content": "Zero leads above 70. Nine total in the DB — all from the Bartow roofers run — none cleared the top-tier threshold.\n\nDrop the floor to 50 and see what's there, or pull all 9 and review the full list. Your call.",
+      "at": "2026-06-15T04:00:51.313Z"
+    },
+    {
+      "role": "user",
+      "content": "What's our overall coverage?",
+      "at": "2026-06-15T04:01:15.654Z"
+    },
+    {
+      "role": "assistant",
+      "content": "56 cells fresh. One touched — Bartow roofers, 8 scraped, 0 contacted, next eligible June 29.\n\n55 untouched cells. Zero outbound sent anywhere. The pond is completely unmolested. Pick a city and niche and we'll start moving.",
+      "at": "2026-06-15T04:01:15.654Z"
+    }
+  ],
+  "mimir:leads:1qy9j54": {
+    "domain": "floridaroofer.net",
+    "business_name": "Great Florida Roofing LLC",
+    "city": "",
+    "state": "FL",
+    "niche": "Roofing contractor",
+    "phone": "(863) 380-2012",
+    "website": "http://floridaroofer.net/",
+    "emails": [],
+    "gbp_url": "https://www.google.com/maps/search/?api=1&query=Great%20Florida%20Roofing%20LLC&query_place_id=ChIJD6PyeVsT3YgRNyqsRiJ0zAY",
+    "gbp_score": 4,
+    "category": "Roofing contractor",
+    "rating": 4.3,
+    "reviews_count": 12,
+    "photo_count": 21,
+    "status": "new",
+    "dnc": false,
+    "sources": [
+      {
+        "name": "google_maps",
+        "discovered_at": "2026-06-15T04:00:00.883Z"
+      }
+    ],
+    "first_seen_at": "2026-06-15T04:00:00.883Z",
+    "last_updated_at": "2026-06-15T04:00:01.122Z",
+    "quality": {
+      "total": 30,
+      "gbp": 6,
+      "license": 20,
+      "decision_maker": 0,
+      "intent": 0,
+      "reachability": 4,
+      "computed_at": "2026-06-15T04:00:01.123Z"
+    },
+    "license": {
+      "number": "CBC028204",
+      "class": "CBC",
+      "status": "active",
+      "matched_business_name": "AFFORDABLE ROOFING & GUTTERS OF FLORIDA INC",
+      "matched_via": "local_snapshot",
+      "discipline_count": 0,
+      "issue_date": "1984-03-06",
+      "expiration_date": "2028-08-31",
+      "years_tenure": 42,
+      "checked_at": "2026-06-15T04:00:01.122Z"
+    }
+  },
+  "mimir:leads:jst3h7": {
+    "domain": "abcanroofing.com",
+    "business_name": "ABCAN ROOFING",
+    "city": "",
+    "state": "FL",
+    "niche": "Roofing contractor",
+    "phone": "(863) 956-6752",
+    "website": "https://abcanroofing.com/",
+    "emails": [
+      {
+        "value": "605a7baede844d278b89dc95ae0a9123@sentry-next.wixpress.com",
+        "source": "hunter",
+        "verification": "ok",
+        "last_verified_at": "2026-06-15T04:00:03.974Z"
+      }
+    ],
+    "gbp_url": "https://www.google.com/maps/search/?api=1&query=ABCAN%20ROOFING&query_place_id=ChIJy-WvhSvIwwMR0A0piI_aBN0",
+    "gbp_score": 5,
+    "category": "Roofing contractor",
+    "rating": 5,
+    "reviews_count": 24,
+    "photo_count": 8,
+    "status": "enriched",
+    "dnc": false,
+    "sources": [
+      {
+        "name": "google_maps",
+        "discovered_at": "2026-06-15T04:00:00.884Z"
+      }
+    ],
+    "first_seen_at": "2026-06-15T04:00:00.884Z",
+    "last_updated_at": "2026-06-15T04:00:03.974Z",
+    "quality": {
+      "total": 36,
+      "gbp": 12,
+      "license": 12,
+      "decision_maker": 0,
+      "intent": 0,
+      "reachability": 12,
+      "computed_at": "2026-06-15T04:00:03.977Z"
+    },
+    "license": {
+      "number": "CGC007544",
+      "class": "CGC",
+      "status": "active",
+      "matched_business_name": "QOALA ROOFING INC",
+      "matched_via": "local_snapshot",
+      "discipline_count": 0,
+      "expiration_date": "2026-08-31",
+      "checked_at": "2026-06-15T04:00:01.208Z"
+    }
+  },
+  "mimir:leads:1mi2vju": {
+    "domain": "swancityroof.com",
+    "business_name": "Swan City Roofing",
+    "city": "",
+    "state": "FL",
+    "niche": "Roofing contractor",
+    "phone": "(863) 394-3076",
+    "website": "https://swancityroof.com/",
+    "emails": [],
+    "gbp_url": "https://www.google.com/maps/search/?api=1&query=Swan%20City%20Roofing&query_place_id=ChIJ99LxpPf3NCMRYR29j3Q5bNE",
+    "gbp_score": 5,
+    "category": "Roofing contractor",
+    "rating": 5,
+    "reviews_count": 14,
+    "photo_count": 10,
+    "status": "new",
+    "dnc": false,
+    "sources": [
+      {
+        "name": "google_maps",
+        "discovered_at": "2026-06-15T04:00:00.885Z"
+      }
+    ],
+    "first_seen_at": "2026-06-15T04:00:00.885Z",
+    "last_updated_at": "2026-06-15T04:00:01.287Z",
+    "quality": {
+      "total": 35,
+      "gbp": 11,
+      "license": 20,
+      "decision_maker": 0,
+      "intent": 0,
+      "reachability": 4,
+      "computed_at": "2026-06-15T04:00:01.287Z"
+    },
+    "license": {
+      "number": "CCC1325973",
+      "class": "CCC",
+      "status": "active",
+      "matched_business_name": "RIVER CITY ROOFING CORP",
+      "matched_via": "local_snapshot",
+      "discipline_count": 0,
+      "issue_date": "2004-03-19",
+      "expiration_date": "2026-08-31",
+      "years_tenure": 22,
+      "checked_at": "2026-06-15T04:00:01.286Z"
+    }
+  },
+  "mimir:leads:1hu9k14": {
+    "domain": "metalroofsupply.com",
+    "business_name": "Metal Roof Supply",
+    "city": "Bartow",
+    "state": "Florida",
+    "niche": "Roofing supply store",
+    "phone": "(863) 225-2554",
+    "website": "https://metalroofsupply.com/",
+    "emails": [],
+    "gbp_url": "https://www.google.com/maps/search/?api=1&query=Metal%20Roof%20Supply&query_place_id=ChIJQfgjjxgX3YgR_SyeZHhY8z4",
+    "gbp_score": 6,
+    "category": "Roofing supply store",
+    "rating": 5,
+    "reviews_count": 22,
+    "photo_count": 19,
+    "status": "new",
+    "dnc": false,
+    "sources": [
+      {
+        "name": "google_maps",
+        "discovered_at": "2026-06-15T04:00:00.886Z"
+      }
+    ],
+    "first_seen_at": "2026-06-15T04:00:00.886Z",
+    "last_updated_at": "2026-06-15T04:00:01.370Z",
+    "quality": {
+      "total": 39,
+      "gbp": 15,
+      "license": 20,
+      "decision_maker": 0,
+      "intent": 0,
+      "reachability": 4,
+      "computed_at": "2026-06-15T04:00:01.370Z"
+    },
+    "license": {
+      "number": "CCC1330788",
+      "class": "CCC",
+      "status": "active",
+      "matched_business_name": "TOTAL ROOFING SYSTEMS 'THE METAL ROOF EXPERTS' INC",
+      "matched_via": "local_snapshot",
+      "discipline_count": 0,
+      "issue_date": "2015-08-28",
+      "expiration_date": "2026-08-31",
+      "years_tenure": 10,
+      "checked_at": "2026-06-15T04:00:01.369Z"
+    }
+  },
+  "mimir:leads:1v86ry": {
+    "domain": "woodsroofinglakeland.com",
+    "business_name": "Wood's Roofing & Remodeling, LLC",
+    "city": "Bartow",
+    "state": "Florida",
+    "niche": "Roofing contractor",
+    "phone": "(863) 513-7775",
+    "website": "https://www.woodsroofinglakeland.com/",
+    "emails": [],
+    "gbp_url": "https://www.google.com/maps/search/?api=1&query=Wood's%20Roofing%20%26%20Remodeling%2C%20LLC&query_place_id=ChIJydq6wmIR3YgRlk3lhdHL5f4",
+    "gbp_score": 6,
+    "category": "Roofing contractor",
+    "rating": 4.3,
+    "reviews_count": 21,
+    "photo_count": 117,
+    "status": "new",
+    "dnc": false,
+    "sources": [
+      {
+        "name": "google_maps",
+        "discovered_at": "2026-06-15T04:00:00.886Z"
+      }
+    ],
+    "first_seen_at": "2026-06-15T04:00:00.886Z",
+    "last_updated_at": "2026-06-15T04:00:01.445Z",
+    "quality": {
+      "total": 38,
+      "gbp": 14,
+      "license": 20,
+      "decision_maker": 0,
+      "intent": 0,
+      "reachability": 4,
+      "computed_at": "2026-06-15T04:00:01.445Z"
+    },
+    "license": {
+      "number": "CCC021386",
+      "class": "CCC",
+      "status": "active",
+      "matched_business_name": "PRICE CONSTRUCTION & ROOFING INC",
+      "matched_via": "local_snapshot",
+      "discipline_count": 0,
+      "issue_date": "1981-10-26",
+      "expiration_date": "2026-08-31",
+      "years_tenure": 44,
+      "checked_at": "2026-06-15T04:00:01.444Z"
+    }
+  },
+  "mimir:leads:1tmfz3o": {
+    "domain": "gilcoroofing.com",
+    "business_name": "Gilco Roofing",
+    "city": "",
+    "state": "FL",
+    "niche": "Roofing contractor",
+    "phone": "(863) 967-5684",
+    "website": "https://gilcoroofing.com/?utm_source=omg-gbp&utm_medium=webclick",
+    "emails": [
+      {
+        "value": "gilcoroofing@hotmail.com",
+        "source": "hunter",
+        "verification": "ok",
+        "last_verified_at": "2026-06-15T04:00:03.975Z"
+      }
+    ],
+    "gbp_url": "https://www.google.com/maps/search/?api=1&query=Gilco%20Roofing&query_place_id=ChIJi7_0MnBr3YgR51-jSdV59Hs",
+    "gbp_score": 7,
+    "category": "Roofing contractor",
+    "rating": 4.5,
+    "reviews_count": 30,
+    "photo_count": 27,
+    "status": "enriched",
+    "dnc": false,
+    "sources": [
+      {
+        "name": "google_maps",
+        "discovered_at": "2026-06-15T04:00:00.886Z"
+      }
+    ],
+    "first_seen_at": "2026-06-15T04:00:00.886Z",
+    "last_updated_at": "2026-06-15T04:00:03.975Z",
+    "quality": {
+      "total": 38,
+      "gbp": 14,
+      "license": 12,
+      "decision_maker": 0,
+      "intent": 0,
+      "reachability": 12,
+      "computed_at": "2026-06-15T04:00:03.978Z"
+    },
+    "license": {
+      "number": "CGC007544",
+      "class": "CGC",
+      "status": "active",
+      "matched_business_name": "QOALA ROOFING INC",
+      "matched_via": "local_snapshot",
+      "discipline_count": 0,
+      "expiration_date": "2026-08-31",
+      "checked_at": "2026-06-15T04:00:01.527Z"
+    }
+  },
+  "mimir:leads:1s8yr6a": {
+    "domain": "americanroofing.construction",
+    "business_name": "American Roofing and Construction FL LLC",
+    "city": "Winter Haven",
+    "state": "Florida",
+    "niche": "Roofing contractor",
+    "phone": "(863) 431-4103",
+    "website": "https://americanroofing.construction/winter-haven/",
+    "emails": [
+      {
+        "value": "ashley@americanroofing.construction",
+        "source": "hunter",
+        "verification": "ok",
+        "last_verified_at": "2026-06-15T04:00:03.976Z"
+      }
+    ],
+    "gbp_url": "https://www.google.com/maps/search/?api=1&query=American%20Roofing%20and%20Construction%20FL%20LLC&query_place_id=ChIJD5acG9cT3YgRT5-f77vVnnA",
+    "gbp_score": 7,
+    "category": "Roofing contractor",
+    "rating": 4.9,
+    "reviews_count": 35,
+    "photo_count": 43,
+    "status": "enriched",
+    "dnc": false,
+    "sources": [
+      {
+        "name": "google_maps",
+        "discovered_at": "2026-06-15T04:00:00.886Z"
+      }
+    ],
+    "first_seen_at": "2026-06-15T04:00:00.886Z",
+    "last_updated_at": "2026-06-15T04:00:03.976Z",
+    "quality": {
+      "total": 41,
+      "gbp": 17,
+      "license": 12,
+      "decision_maker": 0,
+      "intent": 0,
+      "reachability": 12,
+      "computed_at": "2026-06-15T04:00:03.979Z"
+    },
+    "license": {
+      "number": "CBC1250091",
+      "class": "CBC",
+      "status": "active",
+      "matched_business_name": "JM RYAN CONSTRUCTION INC",
+      "matched_via": "local_snapshot",
+      "discipline_count": 0,
+      "expiration_date": "2028-08-31",
+      "checked_at": "2026-06-15T04:00:01.604Z"
+    }
+  },
+  "mimir:leads:429pvu": {
+    "domain": "drieslerconstructions.com",
+    "business_name": "Driesler Construction",
+    "city": "",
+    "state": "FL",
+    "niche": "Roofing contractor",
+    "phone": "(863) 512-9839",
+    "website": "https://www.drieslerconstructions.com/",
+    "emails": [],
+    "gbp_url": "https://www.google.com/maps/search/?api=1&query=Driesler%20Construction&query_place_id=ChIJe0JMKFyT5YkRQdliFjk-ajo",
+    "gbp_score": 7,
+    "category": "Roofing contractor",
+    "rating": 5,
+    "reviews_count": 33,
+    "photo_count": 99,
+    "status": "new",
+    "dnc": false,
+    "sources": [
+      {
+        "name": "google_maps",
+        "discovered_at": "2026-06-15T04:00:00.887Z"
+      }
+    ],
+    "first_seen_at": "2026-06-15T04:00:00.887Z",
+    "last_updated_at": "2026-06-15T04:00:01.731Z",
+    "quality": {
+      "total": 35,
+      "gbp": 19,
+      "license": 12,
+      "decision_maker": 0,
+      "intent": 0,
+      "reachability": 4,
+      "computed_at": "2026-06-15T04:00:01.731Z"
+    },
+    "license": {
+      "number": "CBC002109",
+      "class": "CBC",
+      "status": "active",
+      "matched_business_name": "ADOLF CONSTRUCTION INC",
+      "matched_via": "local_snapshot",
+      "discipline_count": 0,
+      "expiration_date": "2026-08-31",
+      "checked_at": "2026-06-15T04:00:01.730Z"
+    }
+  },
+  "mimir:leads:1qy9j54:events": [
+    {
+      "at": "2026-06-15T04:00:00.914Z",
+      "type": "scrape",
+      "source": "google_maps",
+      "details": {
+        "gbp_score": 4,
+        "query": "roofer in Bartow FL"
+      }
+    }
+  ],
+  "mimir:leads:jst3h7:events": [
+    {
+      "at": "2026-06-15T04:00:00.914Z",
+      "type": "scrape",
+      "source": "google_maps",
+      "details": {
+        "gbp_score": 5,
+        "query": "roofer in Bartow FL"
+      }
+    },
+    {
+      "at": "2026-06-15T04:00:03.988Z",
+      "type": "enrich",
+      "source": "paid",
+      "details": {
+        "email": "605a7baede844d278b89dc95ae0a9123@sentry-next.wixpress.com",
+        "verification": "ok"
+      }
+    }
+  ],
+  "mimir:leads:1mi2vju:events": [
+    {
+      "at": "2026-06-15T04:00:00.915Z",
+      "type": "scrape",
+      "source": "google_maps",
+      "details": {
+        "gbp_score": 5,
+        "query": "roofer in Bartow FL"
+      }
+    }
+  ],
+  "mimir:leads:1hu9k14:events": [
+    {
+      "at": "2026-06-15T04:00:00.915Z",
+      "type": "scrape",
+      "source": "google_maps",
+      "details": {
+        "gbp_score": 6,
+        "query": "roofer in Bartow FL"
+      }
+    }
+  ],
+  "mimir:leads:1v86ry:events": [
+    {
+      "at": "2026-06-15T04:00:00.916Z",
+      "type": "scrape",
+      "source": "google_maps",
+      "details": {
+        "gbp_score": 6,
+        "query": "roofer in Bartow FL"
+      }
+    }
+  ],
+  "mimir:leads:1tmfz3o:events": [
+    {
+      "at": "2026-06-15T04:00:00.916Z",
+      "type": "scrape",
+      "source": "google_maps",
+      "details": {
+        "gbp_score": 7,
+        "query": "roofer in Bartow FL"
+      }
+    },
+    {
+      "at": "2026-06-15T04:00:03.989Z",
+      "type": "enrich",
+      "source": "paid",
+      "details": {
+        "email": "gilcoroofing@hotmail.com",
+        "verification": "ok"
+      }
+    }
+  ],
+  "mimir:leads:1s8yr6a:events": [
+    {
+      "at": "2026-06-15T04:00:00.916Z",
+      "type": "scrape",
+      "source": "google_maps",
+      "details": {
+        "gbp_score": 7,
+        "query": "roofer in Bartow FL"
+      }
+    },
+    {
+      "at": "2026-06-15T04:00:03.989Z",
+      "type": "enrich",
+      "source": "paid",
+      "details": {
+        "email": "ashley@americanroofing.construction",
+        "verification": "ok"
+      }
+    }
+  ],
+  "mimir:leads:429pvu:events": [
+    {
+      "at": "2026-06-15T04:00:00.917Z",
+      "type": "scrape",
+      "source": "google_maps",
+      "details": {
+        "gbp_score": 7,
+        "query": "roofer in Bartow FL"
+      }
+    }
+  ],
+  "mimir:search:zuaou9": {
+    "asOf": "2026-06-15T04:00:00.920Z",
+    "query": "roofer in Bartow FL",
+    "scrapedCount": 15,
+    "scoredAndFiltered": [
+      {
+        "business_name": "Great Florida Roofing LLC",
+        "address": "",
+        "city": "",
+        "state": "FL",
+        "phone": "(863) 380-2012",
+        "website": "http://floridaroofer.net/",
+        "domain": "floridaroofer.net",
+        "category": "Roofing contractor",
+        "rating": 4.3,
+        "reviews_count": 12,
+        "photo_count": 21,
+        "categories_count": 1,
+        "has_recent_posts": false,
+        "gbp_url": "https://www.google.com/maps/search/?api=1&query=Great%20Florida%20Roofing%20LLC&query_place_id=ChIJD6PyeVsT3YgRNyqsRiJ0zAY",
+        "place_id": "ChIJD6PyeVsT3YgRNyqsRiJ0zAY",
+        "gbp_score": 4,
+        "score_breakdown": {
+          "photos": 1,
+          "reviews": 0,
+          "rating": 1,
+          "website": 2,
+          "categories": 0
+        }
+      },
+      {
+        "business_name": "ABCAN ROOFING",
+        "address": "",
+        "city": "",
+        "state": "FL",
+        "phone": "(863) 956-6752",
+        "website": "https://abcanroofing.com/",
+        "domain": "abcanroofing.com",
+        "category": "Roofing contractor",
+        "rating": 5,
+        "reviews_count": 24,
+        "photo_count": 8,
+        "categories_count": 1,
+        "has_recent_posts": false,
+        "gbp_url": "https://www.google.com/maps/search/?api=1&query=ABCAN%20ROOFING&query_place_id=ChIJy-WvhSvIwwMR0A0piI_aBN0",
+        "place_id": "ChIJy-WvhSvIwwMR0A0piI_aBN0",
+        "gbp_score": 5,
+        "score_breakdown": {
+          "photos": 0,
+          "reviews": 1,
+          "rating": 2,
+          "website": 2,
+          "categories": 0
+        }
+      },
+      {
+        "business_name": "Swan City Roofing",
+        "address": "",
+        "city": "",
+        "state": "FL",
+        "phone": "(863) 394-3076",
+        "website": "https://swancityroof.com/",
+        "domain": "swancityroof.com",
+        "category": "Roofing contractor",
+        "rating": 5,
+        "reviews_count": 14,
+        "photo_count": 10,
+        "categories_count": 1,
+        "has_recent_posts": false,
+        "gbp_url": "https://www.google.com/maps/search/?api=1&query=Swan%20City%20Roofing&query_place_id=ChIJ99LxpPf3NCMRYR29j3Q5bNE",
+        "place_id": "ChIJ99LxpPf3NCMRYR29j3Q5bNE",
+        "gbp_score": 5,
+        "score_breakdown": {
+          "photos": 1,
+          "reviews": 0,
+          "rating": 2,
+          "website": 2,
+          "categories": 0
+        }
+      },
+      {
+        "business_name": "Metal Roof Supply",
+        "address": "3190 Delta Ave, Bartow, FL 33830",
+        "city": "Bartow",
+        "state": "Florida",
+        "phone": "(863) 225-2554",
+        "website": "https://metalroofsupply.com/",
+        "domain": "metalroofsupply.com",
+        "category": "Roofing supply store",
+        "rating": 5,
+        "reviews_count": 22,
+        "photo_count": 19,
+        "categories_count": 1,
+        "has_recent_posts": false,
+        "gbp_url": "https://www.google.com/maps/search/?api=1&query=Metal%20Roof%20Supply&query_place_id=ChIJQfgjjxgX3YgR_SyeZHhY8z4",
+        "place_id": "ChIJQfgjjxgX3YgR_SyeZHhY8z4",
+        "gbp_score": 6,
+        "score_breakdown": {
+          "photos": 1,
+          "reviews": 1,
+          "rating": 2,
+          "website": 2,
+          "categories": 0
+        }
+      },
+      {
+        "business_name": "Wood's Roofing & Remodeling, LLC",
+        "address": "1080 80 Foot Rd, Bartow, FL 33830",
+        "city": "Bartow",
+        "state": "Florida",
+        "phone": "(863) 513-7775",
+        "website": "https://www.woodsroofinglakeland.com/",
+        "domain": "woodsroofinglakeland.com",
+        "category": "Roofing contractor",
+        "rating": 4.3,
+        "reviews_count": 21,
+        "photo_count": 117,
+        "categories_count": 1,
+        "has_recent_posts": false,
+        "gbp_url": "https://www.google.com/maps/search/?api=1&query=Wood's%20Roofing%20%26%20Remodeling%2C%20LLC&query_place_id=ChIJydq6wmIR3YgRlk3lhdHL5f4",
+        "place_id": "ChIJydq6wmIR3YgRlk3lhdHL5f4",
+        "gbp_score": 6,
+        "score_breakdown": {
+          "photos": 2,
+          "reviews": 1,
+          "rating": 1,
+          "website": 2,
+          "categories": 0
+        }
+      },
+      {
+        "business_name": "Gilco Roofing",
+        "address": "",
+        "city": "",
+        "state": "FL",
+        "phone": "(863) 967-5684",
+        "website": "https://gilcoroofing.com/?utm_source=omg-gbp&utm_medium=webclick",
+        "domain": "gilcoroofing.com",
+        "category": "Roofing contractor",
+        "rating": 4.5,
+        "reviews_count": 30,
+        "photo_count": 27,
+        "categories_count": 1,
+        "has_recent_posts": false,
+        "gbp_url": "https://www.google.com/maps/search/?api=1&query=Gilco%20Roofing&query_place_id=ChIJi7_0MnBr3YgR51-jSdV59Hs",
+        "place_id": "ChIJi7_0MnBr3YgR51-jSdV59Hs",
+        "gbp_score": 7,
+        "score_breakdown": {
+          "photos": 2,
+          "reviews": 1,
+          "rating": 2,
+          "website": 2,
+          "categories": 0
+        }
+      },
+      {
+        "business_name": "American Roofing and Construction FL LLC",
+        "address": "2219 31st St NW Suite B, Winter Haven, FL 33881",
+        "city": "Winter Haven",
+        "state": "Florida",
+        "phone": "(863) 431-4103",
+        "website": "https://americanroofing.construction/winter-haven/",
+        "domain": "americanroofing.construction",
+        "category": "Roofing contractor",
+        "rating": 4.9,
+        "reviews_count": 35,
+        "photo_count": 43,
+        "categories_count": 1,
+        "has_recent_posts": false,
+        "gbp_url": "https://www.google.com/maps/search/?api=1&query=American%20Roofing%20and%20Construction%20FL%20LLC&query_place_id=ChIJD5acG9cT3YgRT5-f77vVnnA",
+        "place_id": "ChIJD5acG9cT3YgRT5-f77vVnnA",
+        "gbp_score": 7,
+        "score_breakdown": {
+          "photos": 2,
+          "reviews": 1,
+          "rating": 2,
+          "website": 2,
+          "categories": 0
+        }
+      },
+      {
+        "business_name": "Driesler Construction",
+        "address": "",
+        "city": "",
+        "state": "FL",
+        "phone": "(863) 512-9839",
+        "website": "https://www.drieslerconstructions.com/",
+        "domain": "drieslerconstructions.com",
+        "category": "Roofing contractor",
+        "rating": 5,
+        "reviews_count": 33,
+        "photo_count": 99,
+        "categories_count": 1,
+        "has_recent_posts": false,
+        "gbp_url": "https://www.google.com/maps/search/?api=1&query=Driesler%20Construction&query_place_id=ChIJe0JMKFyT5YkRQdliFjk-ajo",
+        "place_id": "ChIJe0JMKFyT5YkRQdliFjk-ajo",
+        "gbp_score": 7,
+        "score_breakdown": {
+          "photos": 2,
+          "reviews": 1,
+          "rating": 2,
+          "website": 2,
+          "categories": 0
+        }
+      }
+    ],
+    "filter": {
+      "score_min": 3,
+      "score_max": 7
+    }
+  },
+  "mimir:coverage": {
+    "Lakeland|general-contractor": {
+      "city": "Lakeland",
+      "niche_slug": "general-contractor",
+      "scraped_count": 8,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh",
+      "last_scraped_at": "2026-06-15T04:20:37.191Z",
+      "next_eligible_at": "2026-06-29T04:20:37.191Z",
+      "last_run": {
+        "at": "2026-06-15T04:20:37.191Z",
+        "found": 8,
+        "queued": 0,
+        "notes": "query: \"general contractor in Lakeland FL\"; (fresh Apify scrape); license: 8 active, 0 expired/suspended/etc.; would-queue (gate ≥60): 0; skipped: 7 low-quality, 0 suppressed, 0 recent"
+      }
+    },
+    "Lakeland|kitchen-remodeler": {
+      "city": "Lakeland",
+      "niche_slug": "kitchen-remodeler",
+      "scraped_count": 10,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh",
+      "last_scraped_at": "2026-06-15T04:21:36.785Z",
+      "next_eligible_at": "2026-06-29T04:21:36.785Z",
+      "last_run": {
+        "at": "2026-06-15T04:21:36.785Z",
+        "found": 10,
+        "queued": 0,
+        "notes": "query: \"kitchen remodeler in Lakeland FL\"; (fresh Apify scrape); license: 10 active, 0 expired/suspended/etc.; would-queue (gate ≥60): 0; skipped: 6 low-quality, 0 suppressed, 0 recent"
+      }
+    },
+    "Lakeland|roofer": {
+      "city": "Lakeland",
+      "niche_slug": "roofer",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Lakeland|hvac-contractor": {
+      "city": "Lakeland",
+      "niche_slug": "hvac-contractor",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Lakeland|electrician": {
+      "city": "Lakeland",
+      "niche_slug": "electrician",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Lakeland|plumber": {
+      "city": "Lakeland",
+      "niche_slug": "plumber",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Lakeland|landscaper": {
+      "city": "Lakeland",
+      "niche_slug": "landscaper",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Lakeland|pool-builder": {
+      "city": "Lakeland",
+      "niche_slug": "pool-builder",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Winter Haven|general-contractor": {
+      "city": "Winter Haven",
+      "niche_slug": "general-contractor",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Winter Haven|kitchen-remodeler": {
+      "city": "Winter Haven",
+      "niche_slug": "kitchen-remodeler",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Winter Haven|roofer": {
+      "city": "Winter Haven",
+      "niche_slug": "roofer",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Winter Haven|hvac-contractor": {
+      "city": "Winter Haven",
+      "niche_slug": "hvac-contractor",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Winter Haven|electrician": {
+      "city": "Winter Haven",
+      "niche_slug": "electrician",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Winter Haven|plumber": {
+      "city": "Winter Haven",
+      "niche_slug": "plumber",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Winter Haven|landscaper": {
+      "city": "Winter Haven",
+      "niche_slug": "landscaper",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Winter Haven|pool-builder": {
+      "city": "Winter Haven",
+      "niche_slug": "pool-builder",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Bartow|general-contractor": {
+      "city": "Bartow",
+      "niche_slug": "general-contractor",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Bartow|kitchen-remodeler": {
+      "city": "Bartow",
+      "niche_slug": "kitchen-remodeler",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Bartow|roofer": {
+      "city": "Bartow",
+      "niche_slug": "roofer",
+      "scraped_count": 8,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh",
+      "last_scraped_at": "2026-06-15T04:00:03.995Z",
+      "next_eligible_at": "2026-06-29T04:00:03.995Z",
+      "last_run": {
+        "at": "2026-06-15T04:00:03.995Z",
+        "found": 8,
+        "queued": 0,
+        "notes": "query: \"roofer in Bartow FL\"; (fresh Apify scrape); license: 8 active, 0 expired/suspended/etc.; would-queue (gate ≥60): 0; skipped: 3 low-quality, 0 suppressed, 0 recent"
+      }
+    },
+    "Bartow|hvac-contractor": {
+      "city": "Bartow",
+      "niche_slug": "hvac-contractor",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Bartow|electrician": {
+      "city": "Bartow",
+      "niche_slug": "electrician",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Bartow|plumber": {
+      "city": "Bartow",
+      "niche_slug": "plumber",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Bartow|landscaper": {
+      "city": "Bartow",
+      "niche_slug": "landscaper",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Bartow|pool-builder": {
+      "city": "Bartow",
+      "niche_slug": "pool-builder",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Auburndale|general-contractor": {
+      "city": "Auburndale",
+      "niche_slug": "general-contractor",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Auburndale|kitchen-remodeler": {
+      "city": "Auburndale",
+      "niche_slug": "kitchen-remodeler",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Auburndale|roofer": {
+      "city": "Auburndale",
+      "niche_slug": "roofer",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Auburndale|hvac-contractor": {
+      "city": "Auburndale",
+      "niche_slug": "hvac-contractor",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Auburndale|electrician": {
+      "city": "Auburndale",
+      "niche_slug": "electrician",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Auburndale|plumber": {
+      "city": "Auburndale",
+      "niche_slug": "plumber",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Auburndale|landscaper": {
+      "city": "Auburndale",
+      "niche_slug": "landscaper",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Auburndale|pool-builder": {
+      "city": "Auburndale",
+      "niche_slug": "pool-builder",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Haines City|general-contractor": {
+      "city": "Haines City",
+      "niche_slug": "general-contractor",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Haines City|kitchen-remodeler": {
+      "city": "Haines City",
+      "niche_slug": "kitchen-remodeler",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Haines City|roofer": {
+      "city": "Haines City",
+      "niche_slug": "roofer",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Haines City|hvac-contractor": {
+      "city": "Haines City",
+      "niche_slug": "hvac-contractor",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Haines City|electrician": {
+      "city": "Haines City",
+      "niche_slug": "electrician",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Haines City|plumber": {
+      "city": "Haines City",
+      "niche_slug": "plumber",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Haines City|landscaper": {
+      "city": "Haines City",
+      "niche_slug": "landscaper",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Haines City|pool-builder": {
+      "city": "Haines City",
+      "niche_slug": "pool-builder",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Davenport|general-contractor": {
+      "city": "Davenport",
+      "niche_slug": "general-contractor",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Davenport|kitchen-remodeler": {
+      "city": "Davenport",
+      "niche_slug": "kitchen-remodeler",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Davenport|roofer": {
+      "city": "Davenport",
+      "niche_slug": "roofer",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Davenport|hvac-contractor": {
+      "city": "Davenport",
+      "niche_slug": "hvac-contractor",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Davenport|electrician": {
+      "city": "Davenport",
+      "niche_slug": "electrician",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Davenport|plumber": {
+      "city": "Davenport",
+      "niche_slug": "plumber",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Davenport|landscaper": {
+      "city": "Davenport",
+      "niche_slug": "landscaper",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Davenport|pool-builder": {
+      "city": "Davenport",
+      "niche_slug": "pool-builder",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Lake Wales|general-contractor": {
+      "city": "Lake Wales",
+      "niche_slug": "general-contractor",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Lake Wales|kitchen-remodeler": {
+      "city": "Lake Wales",
+      "niche_slug": "kitchen-remodeler",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Lake Wales|roofer": {
+      "city": "Lake Wales",
+      "niche_slug": "roofer",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Lake Wales|hvac-contractor": {
+      "city": "Lake Wales",
+      "niche_slug": "hvac-contractor",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Lake Wales|electrician": {
+      "city": "Lake Wales",
+      "niche_slug": "electrician",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Lake Wales|plumber": {
+      "city": "Lake Wales",
+      "niche_slug": "plumber",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Lake Wales|landscaper": {
+      "city": "Lake Wales",
+      "niche_slug": "landscaper",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    },
+    "Lake Wales|pool-builder": {
+      "city": "Lake Wales",
+      "niche_slug": "pool-builder",
+      "scraped_count": 0,
+      "contacted_count": 0,
+      "replied_positive": 0,
+      "saturation_pct": 0,
+      "status": "fresh"
+    }
+  },
+  "mimir:leads:45k6iy": {
+    "domain": "sharrettconstruction.com",
+    "business_name": "Sharrett Construction",
+    "city": "Lakeland",
+    "state": "Florida",
+    "niche": "General contractor",
+    "phone": "(863) 840-9781",
+    "website": "https://sharrettconstruction.com/",
+    "emails": [],
+    "gbp_url": "https://www.google.com/maps/search/?api=1&query=Sharrett%20Construction&query_place_id=ChIJL-6uJlA-3YgRdsp0e25ncio",
+    "gbp_score": 3,
+    "category": "General contractor",
+    "rating": 4.1,
+    "reviews_count": 14,
+    "photo_count": 2,
+    "status": "new",
+    "dnc": false,
+    "sources": [
+      {
+        "name": "google_maps",
+        "discovered_at": "2026-06-15T04:20:32.238Z"
+      }
+    ],
+    "first_seen_at": "2026-06-15T04:20:32.238Z",
+    "last_updated_at": "2026-06-15T04:20:32.547Z",
+    "quality": {
+      "total": 19,
+      "gbp": 3,
+      "license": 12,
+      "decision_maker": 0,
+      "intent": 0,
+      "reachability": 4,
+      "computed_at": "2026-06-15T04:20:32.547Z"
+    },
+    "license": {
+      "number": "CBC002109",
+      "class": "CBC",
+      "status": "active",
+      "matched_business_name": "ADOLF CONSTRUCTION INC",
+      "matched_via": "local_snapshot",
+      "discipline_count": 0,
+      "expiration_date": "2026-08-31",
+      "checked_at": "2026-06-15T04:20:32.545Z"
+    }
+  },
+  "mimir:leads:1ywmsca": {
+    "domain": "preconflorida.com",
+    "business_name": "Pre-Con Construction of Florida",
+    "city": "Lakeland",
+    "state": "Florida",
+    "niche": "General contractor",
+    "phone": "(863) 688-4504",
+    "website": "http://www.preconflorida.com/",
+    "emails": [
+      {
+        "value": "michael@preconflorida.com",
+        "source": "hunter",
+        "verification": "ok",
+        "last_verified_at": "2026-06-15T04:20:37.144Z"
+      }
+    ],
+    "gbp_url": "https://www.google.com/maps/search/?api=1&query=Pre-Con%20Construction%20of%20Florida&query_place_id=ChIJvZdeUck_3YgRa7GunVt1oJg",
+    "gbp_score": 4,
+    "category": "General contractor",
+    "rating": 4.8,
+    "reviews_count": 12,
+    "photo_count": 4,
+    "status": "enriched",
+    "dnc": false,
+    "sources": [
+      {
+        "name": "google_maps",
+        "discovered_at": "2026-06-15T04:20:32.238Z"
+      }
+    ],
+    "first_seen_at": "2026-06-15T04:20:32.238Z",
+    "last_updated_at": "2026-06-15T04:20:37.144Z",
+    "quality": {
+      "total": 51,
+      "gbp": 8,
+      "license": 12,
+      "decision_maker": 19,
+      "intent": 0,
+      "reachability": 12,
+      "computed_at": "2026-06-15T04:20:37.149Z"
+    },
+    "license": {
+      "number": "CGC003856",
+      "class": "CGC",
+      "status": "active",
+      "matched_business_name": "GEN-CON INC",
+      "matched_via": "local_snapshot",
+      "discipline_count": 0,
+      "expiration_date": "2026-08-31",
+      "checked_at": "2026-06-15T04:20:32.626Z"
+    },
+    "decision_maker": {
+      "first_name": "Michael",
+      "last_name": "Huff",
+      "title": "President",
+      "source": "hunter",
+      "confidence": 0.7
+    }
+  },
+  "mimir:leads:grvlsv": {
+    "domain": "hcinc.net",
+    "business_name": "Henkelman Construction Inc.",
+    "city": "Lakeland",
+    "state": "Florida",
+    "niche": "General contractor",
+    "phone": "(863) 666-3575",
+    "website": "http://www.hcinc.net/",
+    "emails": [
+      {
+        "value": "rickr@hcinc.net",
+        "source": "hunter",
+        "verification": "ok",
+        "last_verified_at": "2026-06-15T04:20:37.145Z"
+      }
+    ],
+    "gbp_url": "https://www.google.com/maps/search/?api=1&query=Henkelman%20Construction%20Inc.&query_place_id=ChIJk_OIAho_3YgRb0zSO4rvGJw",
+    "gbp_score": 4,
+    "category": "General contractor",
+    "rating": 4.8,
+    "reviews_count": 13,
+    "photo_count": 6,
+    "status": "enriched",
+    "dnc": false,
+    "sources": [
+      {
+        "name": "google_maps",
+        "discovered_at": "2026-06-15T04:20:32.239Z"
+      }
+    ],
+    "first_seen_at": "2026-06-15T04:20:32.239Z",
+    "last_updated_at": "2026-06-15T04:20:37.145Z",
+    "quality": {
+      "total": 46,
+      "gbp": 8,
+      "license": 12,
+      "decision_maker": 14,
+      "intent": 0,
+      "reachability": 12,
+      "computed_at": "2026-06-15T04:20:37.150Z"
+    },
+    "license": {
+      "number": "CGC1505636",
+      "class": "CGC",
+      "status": "active",
+      "matched_business_name": "HENKELMAN PERRY MCCALL LLC",
+      "matched_via": "local_snapshot",
+      "discipline_count": 0,
+      "expiration_date": "2028-08-31",
+      "checked_at": "2026-06-15T04:20:32.766Z"
+    },
+    "decision_maker": {
+      "first_name": "Rick",
+      "last_name": "Roach",
+      "title": "Director Of Business Development",
+      "source": "hunter",
+      "confidence": 0.7
+    }
+  },
+  "mimir:leads:w7gor5": {
+    "domain": "donaldsonconstructionco.com",
+    "business_name": "Donaldson Construction Company, LLC",
+    "city": "Lakeland",
+    "state": "Florida",
+    "niche": "Concrete contractor",
+    "phone": "(863) 248-5153",
+    "website": "https://www.donaldsonconstructionco.com/",
+    "emails": [
+      {
+        "value": "%20info@donaldsonconstructionco.com",
+        "source": "hunter",
+        "verification": "ok",
+        "last_verified_at": "2026-06-15T04:20:37.146Z"
+      }
+    ],
+    "gbp_url": "https://www.google.com/maps/search/?api=1&query=Donaldson%20Construction%20Company%2C%20LLC&query_place_id=ChIJdW3R77c53YgRuMeUL1t79eI",
+    "gbp_score": 5,
+    "category": "Concrete contractor",
+    "rating": 5,
+    "reviews_count": 14,
+    "photo_count": 14,
+    "status": "enriched",
+    "dnc": false,
+    "sources": [
+      {
+        "name": "google_maps",
+        "discovered_at": "2026-06-15T04:20:32.239Z"
+      }
+    ],
+    "first_seen_at": "2026-06-15T04:20:32.239Z",
+    "last_updated_at": "2026-06-15T04:20:37.146Z",
+    "quality": {
+      "total": 35,
+      "gbp": 11,
+      "license": 12,
+      "decision_maker": 0,
+      "intent": 0,
+      "reachability": 12,
+      "computed_at": "2026-06-15T04:20:37.151Z"
+    },
+    "license": {
+      "number": "CBC002109",
+      "class": "CBC",
+      "status": "active",
+      "matched_business_name": "ADOLF CONSTRUCTION INC",
+      "matched_via": "local_snapshot",
+      "discipline_count": 0,
+      "expiration_date": "2026-08-31",
+      "checked_at": "2026-06-15T04:20:32.885Z"
+    }
+  },
+  "mimir:leads:rvmreo": {
+    "domain": "marcobay.com",
+    "business_name": "Marcobay Construction, Inc.",
+    "city": "Lakeland",
+    "state": "Florida",
+    "niche": "General contractor",
+    "phone": "(863) 680-2293",
+    "website": "http://www.marcobay.com/",
+    "emails": [
+      {
+        "value": "mphillips@marcobay.com",
+        "source": "hunter",
+        "verification": "ok",
+        "last_verified_at": "2026-06-15T04:20:37.146Z"
+      }
+    ],
+    "gbp_url": "https://www.google.com/maps/search/?api=1&query=Marcobay%20Construction%2C%20Inc.&query_place_id=ChIJU-xIKJ453YgRr4fUsCzkpFI",
+    "gbp_score": 5,
+    "category": "General contractor",
+    "rating": 4.6,
+    "reviews_count": 21,
+    "photo_count": 6,
+    "status": "enriched",
+    "dnc": false,
+    "sources": [
+      {
+        "name": "google_maps",
+        "discovered_at": "2026-06-15T04:20:32.240Z"
+      }
+    ],
+    "first_seen_at": "2026-06-15T04:20:32.240Z",
+    "last_updated_at": "2026-06-15T04:20:37.146Z",
+    "quality": {
+      "total": 52,
+      "gbp": 9,
+      "license": 12,
+      "decision_maker": 19,
+      "intent": 0,
+      "reachability": 12,
+      "computed_at": "2026-06-15T04:20:37.152Z"
+    },
+    "license": {
+      "number": "CBC002109",
+      "class": "CBC",
+      "status": "active",
+      "matched_business_name": "ADOLF CONSTRUCTION INC",
+      "matched_via": "local_snapshot",
+      "discipline_count": 0,
+      "expiration_date": "2026-08-31",
+      "checked_at": "2026-06-15T04:20:33.002Z"
+    },
+    "decision_maker": {
+      "first_name": "Mark",
+      "last_name": "Phillips",
+      "title": "Vice President",
+      "source": "hunter",
+      "confidence": 0.7
+    }
+  },
+  "mimir:leads:lq0zpq": {
+    "domain": "oldflconstruction.com",
+    "business_name": "Old Florida Construction and Remodeling LLC",
+    "city": "",
+    "state": "FL",
+    "niche": "General contractor",
+    "phone": "(863) 451-9479",
+    "website": "https://www.oldflconstruction.com/",
+    "emails": [
+      {
+        "value": "richard@oldflconstruction.com",
+        "source": "hunter",
+        "verification": "ok",
+        "last_verified_at": "2026-06-15T04:20:37.147Z"
+      }
+    ],
+    "gbp_url": "https://www.google.com/maps/search/?api=1&query=Old%20Florida%20Construction%20and%20Remodeling%20LLC&query_place_id=ChIJIekSvC_XnWMRXRdVXbnM9ws",
+    "gbp_score": 6,
+    "category": "General contractor",
+    "rating": 5,
+    "reviews_count": 13,
+    "photo_count": 105,
+    "status": "enriched",
+    "dnc": false,
+    "sources": [
+      {
+        "name": "google_maps",
+        "discovered_at": "2026-06-15T04:20:32.241Z"
+      }
+    ],
+    "first_seen_at": "2026-06-15T04:20:32.241Z",
+    "last_updated_at": "2026-06-15T04:20:37.147Z",
+    "quality": {
+      "total": 39,
+      "gbp": 15,
+      "license": 12,
+      "decision_maker": 0,
+      "intent": 0,
+      "reachability": 12,
+      "computed_at": "2026-06-15T04:20:37.155Z"
+    },
+    "license": {
+      "number": "CGC008157",
+      "class": "CGC",
+      "status": "active",
+      "matched_business_name": "OLD FLORIDA BUILDERS INC",
+      "matched_via": "local_snapshot",
+      "discipline_count": 0,
+      "expiration_date": "2026-08-31",
+      "checked_at": "2026-06-15T04:20:33.082Z"
+    }
+  },
+  "mimir:leads:poy4ri": {
+    "domain": "evangelistoconstruction.com",
+    "business_name": "Evangelisto Construction",
+    "city": "Lakeland",
+    "state": "Florida",
+    "niche": "Kitchen remodeler",
+    "phone": "(863) 617-7700",
+    "website": "https://www.evangelistoconstruction.com/",
+    "emails": [
+      {
+        "value": "doug@evangelistoconstruction.com",
+        "source": "hunter",
+        "verification": "ok",
+        "last_verified_at": "2026-06-15T04:21:36.717Z"
+      }
+    ],
+    "gbp_url": "https://www.google.com/maps/search/?api=1&query=Evangelisto%20Construction&query_place_id=ChIJj4WoZgA_3YgRZOQWuIDlTpU",
+    "gbp_score": 7,
+    "category": "Kitchen remodeler",
+    "rating": 4.9,
+    "reviews_count": 30,
+    "photo_count": 147,
+    "status": "enriched",
+    "dnc": false,
+    "sources": [
+      {
+        "name": "google_maps",
+        "discovered_at": "2026-06-15T04:20:32.241Z"
+      }
+    ],
+    "first_seen_at": "2026-06-15T04:20:32.241Z",
+    "last_updated_at": "2026-06-15T04:21:36.717Z",
+    "quality": {
+      "total": 43,
+      "gbp": 19,
+      "license": 12,
+      "decision_maker": 0,
+      "intent": 0,
+      "reachability": 12,
+      "computed_at": "2026-06-15T04:21:36.725Z"
+    },
+    "license": {
+      "number": "CBC002109",
+      "class": "CBC",
+      "status": "active",
+      "matched_business_name": "ADOLF CONSTRUCTION INC",
+      "matched_via": "local_snapshot",
+      "discipline_count": 0,
+      "expiration_date": "2026-08-31",
+      "checked_at": "2026-06-15T04:21:28.427Z"
+    }
+  },
+  "mimir:leads:17n1lrt": {
+    "domain": "true-builders.com",
+    "business_name": "True Builders Inc.",
+    "city": "Lakeland",
+    "state": "Florida",
+    "niche": "Construction company",
+    "phone": "(863) 804-6009",
+    "website": "https://www.true-builders.com/",
+    "emails": [
+      {
+        "value": "cheyenne@true-builders.com",
+        "source": "hunter",
+        "verification": "ok",
+        "last_verified_at": "2026-06-15T04:21:36.715Z"
+      }
+    ],
+    "gbp_url": "https://www.google.com/maps/search/?api=1&query=True%20Builders%20Inc.&query_place_id=ChIJJYfgUPo53YgR_q_cpxsWaP8",
+    "gbp_score": 7,
+    "category": "Construction company",
+    "rating": 5,
+    "reviews_count": 46,
+    "photo_count": 91,
+    "status": "enriched",
+    "dnc": false,
+    "sources": [
+      {
+        "name": "google_maps",
+        "discovered_at": "2026-06-15T04:20:32.242Z"
+      }
+    ],
+    "first_seen_at": "2026-06-15T04:20:32.242Z",
+    "last_updated_at": "2026-06-15T04:21:36.715Z",
+    "quality": {
+      "total": 54,
+      "gbp": 19,
+      "license": 12,
+      "decision_maker": 11,
+      "intent": 0,
+      "reachability": 12,
+      "computed_at": "2026-06-15T04:21:36.719Z"
+    },
+    "license": {
+      "number": "CGC002924",
+      "class": "CGC",
+      "status": "active",
+      "matched_business_name": "ELITE BUILDERS INC",
+      "matched_via": "local_snapshot",
+      "discipline_count": 0,
+      "expiration_date": "2026-08-31",
+      "checked_at": "2026-06-15T04:21:28.151Z"
+    },
+    "decision_maker": {
+      "first_name": "Cheyenne",
+      "last_name": "Johnson",
+      "title": "Receptionist",
+      "source": "hunter",
+      "confidence": 0.7
+    }
+  },
+  "mimir:leads:45k6iy:events": [
+    {
+      "at": "2026-06-15T04:20:32.273Z",
+      "type": "scrape",
+      "source": "multi",
+      "details": {
+        "gbp_score": 3,
+        "query": "general contractor in Lakeland FL",
+        "sources": [
+          "google_maps"
+        ]
+      }
+    }
+  ],
+  "mimir:leads:1ywmsca:events": [
+    {
+      "at": "2026-06-15T04:20:32.273Z",
+      "type": "scrape",
+      "source": "multi",
+      "details": {
+        "gbp_score": 4,
+        "query": "general contractor in Lakeland FL",
+        "sources": [
+          "google_maps"
+        ]
+      }
+    },
+    {
+      "at": "2026-06-15T04:20:37.177Z",
+      "type": "enrich",
+      "source": "paid",
+      "details": {
+        "email": "michael@preconflorida.com",
+        "verification": "ok"
+      }
+    }
+  ],
+  "mimir:leads:grvlsv:events": [
+    {
+      "at": "2026-06-15T04:20:32.274Z",
+      "type": "scrape",
+      "source": "multi",
+      "details": {
+        "gbp_score": 4,
+        "query": "general contractor in Lakeland FL",
+        "sources": [
+          "google_maps"
+        ]
+      }
+    },
+    {
+      "at": "2026-06-15T04:20:37.178Z",
+      "type": "enrich",
+      "source": "paid",
+      "details": {
+        "email": "rickr@hcinc.net",
+        "verification": "ok"
+      }
+    }
+  ],
+  "mimir:leads:w7gor5:events": [
+    {
+      "at": "2026-06-15T04:20:32.274Z",
+      "type": "scrape",
+      "source": "multi",
+      "details": {
+        "gbp_score": 5,
+        "query": "general contractor in Lakeland FL",
+        "sources": [
+          "google_maps"
+        ]
+      }
+    },
+    {
+      "at": "2026-06-15T04:20:37.178Z",
+      "type": "enrich",
+      "source": "paid",
+      "details": {
+        "email": "%20info@donaldsonconstructionco.com",
+        "verification": "ok"
+      }
+    }
+  ],
+  "mimir:leads:rvmreo:events": [
+    {
+      "at": "2026-06-15T04:20:32.275Z",
+      "type": "scrape",
+      "source": "multi",
+      "details": {
+        "gbp_score": 5,
+        "query": "general contractor in Lakeland FL",
+        "sources": [
+          "google_maps"
+        ]
+      }
+    },
+    {
+      "at": "2026-06-15T04:20:37.179Z",
+      "type": "enrich",
+      "source": "paid",
+      "details": {
+        "email": "mphillips@marcobay.com",
+        "verification": "ok"
+      }
+    }
+  ],
+  "mimir:leads:lq0zpq:events": [
+    {
+      "at": "2026-06-15T04:20:32.276Z",
+      "type": "scrape",
+      "source": "multi",
+      "details": {
+        "gbp_score": 6,
+        "query": "general contractor in Lakeland FL",
+        "sources": [
+          "google_maps"
+        ]
+      }
+    },
+    {
+      "at": "2026-06-15T04:20:37.180Z",
+      "type": "enrich",
+      "source": "paid",
+      "details": {
+        "email": "richard@oldflconstruction.com",
+        "verification": "ok"
+      }
+    }
+  ],
+  "mimir:leads:poy4ri:events": [
+    {
+      "at": "2026-06-15T04:20:32.277Z",
+      "type": "scrape",
+      "source": "multi",
+      "details": {
+        "gbp_score": 7,
+        "query": "general contractor in Lakeland FL",
+        "sources": [
+          "google_maps"
+        ]
+      }
+    },
+    {
+      "at": "2026-06-15T04:20:37.180Z",
+      "type": "enrich",
+      "source": "paid",
+      "details": {
+        "email": "doug@evangelistoconstruction.com",
+        "verification": "ok"
+      }
+    },
+    {
+      "at": "2026-06-15T04:21:27.668Z",
+      "type": "scrape",
+      "source": "multi",
+      "details": {
+        "gbp_score": 7,
+        "query": "kitchen remodeler in Lakeland FL",
+        "sources": [
+          "google_maps"
+        ]
+      }
+    },
+    {
+      "at": "2026-06-15T04:21:36.774Z",
+      "type": "enrich",
+      "source": "paid",
+      "details": {
+        "email": "doug@evangelistoconstruction.com",
+        "verification": "ok"
+      }
+    }
+  ],
+  "mimir:leads:17n1lrt:events": [
+    {
+      "at": "2026-06-15T04:20:32.277Z",
+      "type": "scrape",
+      "source": "multi",
+      "details": {
+        "gbp_score": 7,
+        "query": "general contractor in Lakeland FL",
+        "sources": [
+          "google_maps"
+        ]
+      }
+    },
+    {
+      "at": "2026-06-15T04:20:37.181Z",
+      "type": "enrich",
+      "source": "paid",
+      "details": {
+        "email": "cheyenne@true-builders.com",
+        "verification": "ok"
+      }
+    },
+    {
+      "at": "2026-06-15T04:21:27.666Z",
+      "type": "scrape",
+      "source": "multi",
+      "details": {
+        "gbp_score": 7,
+        "query": "kitchen remodeler in Lakeland FL",
+        "sources": [
+          "google_maps"
+        ]
+      }
+    },
+    {
+      "at": "2026-06-15T04:21:36.771Z",
+      "type": "enrich",
+      "source": "paid",
+      "details": {
+        "email": "cheyenne@true-builders.com",
+        "verification": "ok"
+      }
+    }
+  ],
+  "mimir:search:ev250e": {
+    "asOf": "2026-06-15T04:20:32.282Z",
+    "query": "general contractor in Lakeland FL",
+    "scrapedCount": 15,
+    "scoredAndFiltered": [
+      {
+        "business_name": "Sharrett Construction",
+        "address": "124 W Main St, Lakeland, FL 33815",
+        "city": "Lakeland",
+        "state": "Florida",
+        "phone": "(863) 840-9781",
+        "website": "https://sharrettconstruction.com/",
+        "domain": "sharrettconstruction.com",
+        "category": "General contractor",
+        "rating": 4.1,
+        "reviews_count": 14,
+        "photo_count": 2,
+        "categories_count": 1,
+        "has_recent_posts": false,
+        "gbp_url": "https://www.google.com/maps/search/?api=1&query=Sharrett%20Construction&query_place_id=ChIJL-6uJlA-3YgRdsp0e25ncio",
+        "place_id": "ChIJL-6uJlA-3YgRdsp0e25ncio",
+        "gbp_score": 3,
+        "score_breakdown": {
+          "photos": 0,
+          "reviews": 0,
+          "rating": 1,
+          "website": 2,
+          "categories": 0
+        }
+      },
+      {
+        "business_name": "Pre-Con Construction of Florida",
+        "address": "1114 E Oleander St, Lakeland, FL 33801",
+        "city": "Lakeland",
+        "state": "Florida",
+        "phone": "(863) 688-4504",
+        "website": "http://www.preconflorida.com/",
+        "domain": "preconflorida.com",
+        "category": "General contractor",
+        "rating": 4.8,
+        "reviews_count": 12,
+        "photo_count": 4,
+        "categories_count": 1,
+        "has_recent_posts": false,
+        "gbp_url": "https://www.google.com/maps/search/?api=1&query=Pre-Con%20Construction%20of%20Florida&query_place_id=ChIJvZdeUck_3YgRa7GunVt1oJg",
+        "place_id": "ChIJvZdeUck_3YgRa7GunVt1oJg",
+        "gbp_score": 4,
+        "score_breakdown": {
+          "photos": 0,
+          "reviews": 0,
+          "rating": 2,
+          "website": 2,
+          "categories": 0
+        }
+      },
+      {
+        "business_name": "Henkelman Construction Inc.",
+        "address": "1830 N Crystal Lake Dr, Lakeland, FL 33801",
+        "city": "Lakeland",
+        "state": "Florida",
+        "phone": "(863) 666-3575",
+        "website": "http://www.hcinc.net/",
+        "domain": "hcinc.net",
+        "category": "General contractor",
+        "rating": 4.8,
+        "reviews_count": 13,
+        "photo_count": 6,
+        "categories_count": 1,
+        "has_recent_posts": false,
+        "gbp_url": "https://www.google.com/maps/search/?api=1&query=Henkelman%20Construction%20Inc.&query_place_id=ChIJk_OIAho_3YgRb0zSO4rvGJw",
+        "place_id": "ChIJk_OIAho_3YgRb0zSO4rvGJw",
+        "gbp_score": 4,
+        "score_breakdown": {
+          "photos": 0,
+          "reviews": 0,
+          "rating": 2,
+          "website": 2,
+          "categories": 0
+        }
+      },
+      {
+        "business_name": "Donaldson Construction Company, LLC",
+        "address": "517 Lake Miriam Dr, Lakeland, FL 33813",
+        "city": "Lakeland",
+        "state": "Florida",
+        "phone": "(863) 248-5153",
+        "website": "https://www.donaldsonconstructionco.com/",
+        "domain": "donaldsonconstructionco.com",
+        "category": "Concrete contractor",
+        "rating": 5,
+        "reviews_count": 14,
+        "photo_count": 14,
+        "categories_count": 1,
+        "has_recent_posts": false,
+        "gbp_url": "https://www.google.com/maps/search/?api=1&query=Donaldson%20Construction%20Company%2C%20LLC&query_place_id=ChIJdW3R77c53YgRuMeUL1t79eI",
+        "place_id": "ChIJdW3R77c53YgRuMeUL1t79eI",
+        "gbp_score": 5,
+        "score_breakdown": {
+          "photos": 1,
+          "reviews": 0,
+          "rating": 2,
+          "website": 2,
+          "categories": 0
+        }
+      },
+      {
+        "business_name": "Marcobay Construction, Inc.",
+        "address": "3810 Drane Field Rd #16, Lakeland, FL 33811",
+        "city": "Lakeland",
+        "state": "Florida",
+        "phone": "(863) 680-2293",
+        "website": "http://www.marcobay.com/",
+        "domain": "marcobay.com",
+        "category": "General contractor",
+        "rating": 4.6,
+        "reviews_count": 21,
+        "photo_count": 6,
+        "categories_count": 1,
+        "has_recent_posts": false,
+        "gbp_url": "https://www.google.com/maps/search/?api=1&query=Marcobay%20Construction%2C%20Inc.&query_place_id=ChIJU-xIKJ453YgRr4fUsCzkpFI",
+        "place_id": "ChIJU-xIKJ453YgRr4fUsCzkpFI",
+        "gbp_score": 5,
+        "score_breakdown": {
+          "photos": 0,
+          "reviews": 1,
+          "rating": 2,
+          "website": 2,
+          "categories": 0
+        }
+      },
+      {
+        "business_name": "Old Florida Construction and Remodeling LLC",
+        "address": "",
+        "city": "",
+        "state": "FL",
+        "phone": "(863) 451-9479",
+        "website": "https://www.oldflconstruction.com/",
+        "domain": "oldflconstruction.com",
+        "category": "General contractor",
+        "rating": 5,
+        "reviews_count": 13,
+        "photo_count": 105,
+        "categories_count": 1,
+        "has_recent_posts": false,
+        "gbp_url": "https://www.google.com/maps/search/?api=1&query=Old%20Florida%20Construction%20and%20Remodeling%20LLC&query_place_id=ChIJIekSvC_XnWMRXRdVXbnM9ws",
+        "place_id": "ChIJIekSvC_XnWMRXRdVXbnM9ws",
+        "gbp_score": 6,
+        "score_breakdown": {
+          "photos": 2,
+          "reviews": 0,
+          "rating": 2,
+          "website": 2,
+          "categories": 0
+        }
+      },
+      {
+        "business_name": "Evangelisto Construction",
+        "address": "2424 Commerce Point Dr, Lakeland, FL 33801",
+        "city": "Lakeland",
+        "state": "Florida",
+        "phone": "(863) 617-7700",
+        "website": "https://www.evangelistoconstruction.com/",
+        "domain": "evangelistoconstruction.com",
+        "category": "Kitchen remodeler",
+        "rating": 4.9,
+        "reviews_count": 30,
+        "photo_count": 147,
+        "categories_count": 1,
+        "has_recent_posts": false,
+        "gbp_url": "https://www.google.com/maps/search/?api=1&query=Evangelisto%20Construction&query_place_id=ChIJj4WoZgA_3YgRZOQWuIDlTpU",
+        "place_id": "ChIJj4WoZgA_3YgRZOQWuIDlTpU",
+        "gbp_score": 7,
+        "score_breakdown": {
+          "photos": 2,
+          "reviews": 1,
+          "rating": 2,
+          "website": 2,
+          "categories": 0
+        }
+      },
+      {
+        "business_name": "True Builders Inc.",
+        "address": "2829 Badger Rd #19, Lakeland, FL 33811",
+        "city": "Lakeland",
+        "state": "Florida",
+        "phone": "(863) 804-6009",
+        "website": "https://www.true-builders.com/",
+        "domain": "true-builders.com",
+        "category": "Construction company",
+        "rating": 5,
+        "reviews_count": 46,
+        "photo_count": 91,
+        "categories_count": 1,
+        "has_recent_posts": false,
+        "gbp_url": "https://www.google.com/maps/search/?api=1&query=True%20Builders%20Inc.&query_place_id=ChIJJYfgUPo53YgR_q_cpxsWaP8",
+        "place_id": "ChIJJYfgUPo53YgR_q_cpxsWaP8",
+        "gbp_score": 7,
+        "score_breakdown": {
+          "photos": 2,
+          "reviews": 1,
+          "rating": 2,
+          "website": 2,
+          "categories": 0
+        }
+      }
+    ],
+    "filter": {
+      "score_min": 3,
+      "score_max": 7
+    },
+    "sources_used": [
+      {
+        "name": "google_maps",
+        "raw_count": 15,
+        "status": "ok"
+      },
+      {
+        "name": "yelp",
+        "raw_count": 0,
+        "status": "empty"
+      },
+      {
+        "name": "bbb",
+        "raw_count": 0,
+        "status": "empty"
+      }
+    ]
+  },
+  "mimir:leads:1nljvux": {
+    "domain": "burnsflooringanddesign.com",
+    "business_name": "Burns Flooring & Kitchen Design",
+    "city": "Lakeland",
+    "state": "Florida",
+    "niche": "Kitchen remodeler",
+    "phone": "(863) 333-0780",
+    "website": "https://burnsflooringanddesign.com/",
+    "emails": [],
+    "gbp_url": "https://www.google.com/maps/search/?api=1&query=Burns%20Flooring%20%26%20Kitchen%20Design&query_place_id=ChIJQQybxR853YgRDb0RIVZfOiE",
+    "gbp_score": 6,
+    "category": "Kitchen remodeler",
+    "rating": 4.6,
+    "reviews_count": 16,
+    "photo_count": 35,
+    "status": "new",
+    "dnc": false,
+    "sources": [
+      {
+        "name": "google_maps",
+        "discovered_at": "2026-06-15T04:21:27.616Z"
+      }
+    ],
+    "first_seen_at": "2026-06-15T04:21:27.616Z",
+    "last_updated_at": "2026-06-15T04:21:27.753Z",
+    "quality": {
+      "total": 26,
+      "gbp": 10,
+      "license": 12,
+      "decision_maker": 0,
+      "intent": 0,
+      "reachability": 4,
+      "computed_at": "2026-06-15T04:21:27.754Z"
+    },
+    "license": {
+      "number": "CBC056746",
+      "class": "CBC",
+      "status": "active",
+      "matched_business_name": "GULFCOAST KITCHEN DESIGN INC",
+      "matched_via": "local_snapshot",
+      "discipline_count": 0,
+      "expiration_date": "2026-08-31",
+      "checked_at": "2026-06-15T04:21:27.752Z"
+    }
+  },
+  "mimir:leads:3hf692": {
+    "domain": "wallergroup.com",
+    "business_name": "Waller Construction and Design Center",
+    "city": "Lakeland",
+    "state": "Florida",
+    "niche": "General contractor",
+    "phone": "(863) 300-0351",
+    "website": "https://www.wallergroup.com/?utm_source=google&utm_medium=local",
+    "emails": [
+      {
+        "value": "amanda@wallergroup.com",
+        "source": "hunter",
+        "verification": "ok",
+        "last_verified_at": "2026-06-15T04:21:36.714Z"
+      }
+    ],
+    "gbp_url": "https://www.google.com/maps/search/?api=1&query=Waller%20Construction%20and%20Design%20Center&query_place_id=ChIJH8Xwis043YgRxfHcTYnRlu4",
+    "gbp_score": 7,
+    "category": "General contractor",
+    "rating": 4.4,
+    "reviews_count": 51,
+    "photo_count": 31,
+    "status": "enriched",
+    "dnc": false,
+    "sources": [
+      {
+        "name": "google_maps",
+        "discovered_at": "2026-06-15T04:21:27.617Z"
+      }
+    ],
+    "first_seen_at": "2026-06-15T04:21:27.617Z",
+    "last_updated_at": "2026-06-15T04:21:36.714Z",
+    "quality": {
+      "total": 53,
+      "gbp": 15,
+      "license": 12,
+      "decision_maker": 14,
+      "intent": 0,
+      "reachability": 12,
+      "computed_at": "2026-06-15T04:21:36.718Z"
+    },
+    "license": {
+      "number": "CGC006592",
+      "class": "CGC",
+      "status": "active",
+      "matched_business_name": "AMERICAN DESIGN ENGINEERING CONSTRUCTION INC",
+      "matched_via": "local_snapshot",
+      "discipline_count": 0,
+      "expiration_date": "2026-08-31",
+      "checked_at": "2026-06-15T04:21:27.831Z"
+    },
+    "decision_maker": {
+      "first_name": "Amanda",
+      "last_name": "Boser",
+      "title": "Property Manager",
+      "source": "hunter",
+      "confidence": 0.7
+    }
+  },
+  "mimir:leads:1jcwitd": {
+    "domain": "aaaremodeling.biz",
+    "business_name": "AAA Remodeling of Central Florida",
+    "city": "",
+    "state": "FL",
+    "niche": "Bathroom remodeler",
+    "phone": "(352) 708-1322",
+    "website": "https://aaaremodeling.biz/",
+    "emails": [],
+    "gbp_url": "https://www.google.com/maps/search/?api=1&query=AAA%20Remodeling%20of%20Central%20Florida&query_place_id=ChIJO_zmLiU144kRa8m9JuEc_Do",
+    "gbp_score": 7,
+    "category": "Bathroom remodeler",
+    "rating": 5,
+    "reviews_count": 28,
+    "photo_count": 39,
+    "status": "new",
+    "dnc": false,
+    "sources": [
+      {
+        "name": "google_maps",
+        "discovered_at": "2026-06-15T04:21:27.618Z"
+      }
+    ],
+    "first_seen_at": "2026-06-15T04:21:27.618Z",
+    "last_updated_at": "2026-06-15T04:21:27.913Z",
+    "quality": {
+      "total": 41,
+      "gbp": 17,
+      "license": 20,
+      "decision_maker": 0,
+      "intent": 0,
+      "reachability": 4,
+      "computed_at": "2026-06-15T04:21:27.913Z"
+    },
+    "license": {
+      "number": "CGC010189",
+      "class": "CGC",
+      "status": "active",
+      "matched_business_name": "CENTRAL FLORIDA DRY WALL AND PLASTERING INC",
+      "matched_via": "local_snapshot",
+      "discipline_count": 0,
+      "issue_date": "1976-02-04",
+      "expiration_date": "2026-08-31",
+      "years_tenure": 50,
+      "checked_at": "2026-06-15T04:21:27.912Z"
+    }
+  },
+  "mimir:leads:bpl2w1": {
+    "domain": "apremodelingandrenovation.com",
+    "business_name": "AP Remodeling and Renovation LLC",
+    "city": "",
+    "state": "FL",
+    "niche": "Construction company",
+    "phone": "(407) 419-2773",
+    "website": "http://apremodelingandrenovation.com/",
+    "emails": [],
+    "gbp_url": "https://www.google.com/maps/search/?api=1&query=AP%20Remodeling%20and%20Renovation%20LLC&query_place_id=ChIJ2T3GcRw5WycRraS7S6Gkh7c",
+    "gbp_score": 7,
+    "category": "Construction company",
+    "rating": 5,
+    "reviews_count": 48,
+    "photo_count": 53,
+    "status": "new",
+    "dnc": false,
+    "sources": [
+      {
+        "name": "google_maps",
+        "discovered_at": "2026-06-15T04:21:27.619Z"
+      }
+    ],
+    "first_seen_at": "2026-06-15T04:21:27.619Z",
+    "last_updated_at": "2026-06-15T04:21:27.992Z",
+    "quality": {
+      "total": 35,
+      "gbp": 19,
+      "license": 12,
+      "decision_maker": 0,
+      "intent": 0,
+      "reachability": 4,
+      "computed_at": "2026-06-15T04:21:27.993Z"
+    },
+    "license": {
+      "number": "CGC056812",
+      "class": "CGC",
+      "status": "active",
+      "matched_business_name": "ZYNDA CUSTOM HOMES & REMODELING INC",
+      "matched_via": "local_snapshot",
+      "discipline_count": 0,
+      "expiration_date": "2026-08-31",
+      "checked_at": "2026-06-15T04:21:27.991Z"
+    }
+  },
+  "mimir:leads:tyg04m": {
+    "domain": "valueproremodeling.com",
+    "business_name": "ValuePro Remodeling",
+    "city": "Lakeland",
+    "state": "Florida",
+    "niche": "General contractor",
+    "phone": "(863) 614-0045",
+    "website": "https://valueproremodeling.com/",
+    "emails": [],
+    "gbp_url": "https://www.google.com/maps/search/?api=1&query=ValuePro%20Remodeling&query_place_id=ChIJj8d0Ukg_3YgRTuJUy7_ZbAs",
+    "gbp_score": 7,
+    "category": "General contractor",
+    "rating": 4.5,
+    "reviews_count": 49,
+    "photo_count": 60,
+    "status": "new",
+    "dnc": false,
+    "sources": [
+      {
+        "name": "google_maps",
+        "discovered_at": "2026-06-15T04:21:27.619Z"
+      }
+    ],
+    "first_seen_at": "2026-06-15T04:21:27.619Z",
+    "last_updated_at": "2026-06-15T04:21:28.071Z",
+    "quality": {
+      "total": 32,
+      "gbp": 16,
+      "license": 12,
+      "decision_maker": 0,
+      "intent": 0,
+      "reachability": 4,
+      "computed_at": "2026-06-15T04:21:28.072Z"
+    },
+    "license": {
+      "number": "CGC056812",
+      "class": "CGC",
+      "status": "active",
+      "matched_business_name": "ZYNDA CUSTOM HOMES & REMODELING INC",
+      "matched_via": "local_snapshot",
+      "discipline_count": 0,
+      "expiration_date": "2026-08-31",
+      "checked_at": "2026-06-15T04:21:28.070Z"
+    }
+  },
+  "mimir:leads:15svqe6": {
+    "domain": "ckblakeland.com",
+    "business_name": "Complete Kitchen & Bath",
+    "city": "Lakeland",
+    "state": "FL",
+    "niche": "Kitchen remodeler",
+    "phone": "(863) 940-9875",
+    "website": "https://ckblakeland.com/",
+    "emails": [
+      {
+        "value": "kevin@ckblakeland.com",
+        "source": "hunter",
+        "verification": "ok",
+        "last_verified_at": "2026-06-15T04:21:36.715Z"
+      }
+    ],
+    "gbp_url": "https://www.google.com/maps/search/?api=1&query=Complete%20Kitchen%20%26%20Bath&query_place_id=ChIJXbu0Glc53YgRABmwJ9d_HAE",
+    "gbp_score": 7,
+    "category": "Kitchen remodeler",
+    "rating": 4.3,
+    "reviews_count": 102,
+    "photo_count": 217,
+    "status": "enriched",
+    "dnc": false,
+    "sources": [
+      {
+        "name": "google_maps",
+        "discovered_at": "2026-06-15T04:21:27.620Z"
+      }
+    ],
+    "first_seen_at": "2026-06-15T04:21:27.620Z",
+    "last_updated_at": "2026-06-15T04:21:36.715Z",
+    "quality": {
+      "total": 52,
+      "gbp": 20,
+      "license": 20,
+      "decision_maker": 0,
+      "intent": 0,
+      "reachability": 12,
+      "computed_at": "2026-06-15T04:21:36.721Z"
+    },
+    "license": {
+      "number": "CRC047927",
+      "class": "CRC",
+      "status": "active",
+      "matched_business_name": "CABINETREE KITCHEN & BATH DESIGN, LLC",
+      "matched_via": "local_snapshot",
+      "discipline_count": 0,
+      "issue_date": "1989-07-29",
+      "expiration_date": "2026-08-31",
+      "years_tenure": 36,
+      "checked_at": "2026-06-15T04:21:28.228Z"
+    }
+  },
+  "mimir:leads:54tmgo": {
+    "domain": "floridakitchenbath.com",
+    "business_name": "Florida Kitchen And Bath",
+    "city": "Lakeland",
+    "state": "Florida",
+    "niche": "Kitchen remodeler",
+    "phone": "(863) 688-0480",
+    "website": "http://www.floridakitchenbath.com/",
+    "emails": [
+      {
+        "value": "blayne@floridakitchenbath.com",
+        "source": "hunter",
+        "verification": "ok",
+        "last_verified_at": "2026-06-15T04:21:36.716Z"
+      }
+    ],
+    "gbp_url": "https://www.google.com/maps/search/?api=1&query=Florida%20Kitchen%20And%20Bath&query_place_id=ChIJHxlhqU8_3YgRWrJgS4dUMGQ",
+    "gbp_score": 7,
+    "category": "Kitchen remodeler",
+    "rating": 4.2,
+    "reviews_count": 55,
+    "photo_count": 36,
+    "status": "enriched",
+    "dnc": false,
+    "sources": [
+      {
+        "name": "google_maps",
+        "discovered_at": "2026-06-15T04:21:27.621Z"
+      }
+    ],
+    "first_seen_at": "2026-06-15T04:21:27.621Z",
+    "last_updated_at": "2026-06-15T04:21:36.716Z",
+    "quality": {
+      "total": 39,
+      "gbp": 15,
+      "license": 12,
+      "decision_maker": 0,
+      "intent": 0,
+      "reachability": 12,
+      "computed_at": "2026-06-15T04:21:36.723Z"
+    },
+    "license": {
+      "number": "CGC002772",
+      "class": "CGC",
+      "status": "active",
+      "matched_business_name": "FLORIDA PROFESSIONAL BUILDERS INC",
+      "matched_via": "local_snapshot",
+      "discipline_count": 0,
+      "expiration_date": "2026-08-31",
+      "checked_at": "2026-06-15T04:21:28.306Z"
+    }
+  },
+  "mimir:leads:4ooxan": {
+    "domain": "kaplanremodeling.com",
+    "business_name": "Kaplan Remodeling",
+    "city": "",
+    "state": "FL",
+    "niche": "General contractor",
+    "phone": "(407) 212-7887",
+    "website": "http://kaplanremodeling.com/",
+    "emails": [
+      {
+        "value": "info@kaplanremodeling.com",
+        "source": "hunter",
+        "verification": "ok",
+        "last_verified_at": "2026-06-15T04:21:36.717Z"
+      }
+    ],
+    "gbp_url": "https://www.google.com/maps/search/?api=1&query=Kaplan%20Remodeling&query_place_id=ChIJR8lvzZpx54gRjEfSpza75yc",
+    "gbp_score": 7,
+    "category": "General contractor",
+    "rating": 4.9,
+    "reviews_count": 35,
+    "photo_count": 115,
+    "status": "enriched",
+    "dnc": false,
+    "sources": [
+      {
+        "name": "google_maps",
+        "discovered_at": "2026-06-15T04:21:27.622Z"
+      }
+    ],
+    "first_seen_at": "2026-06-15T04:21:27.622Z",
+    "last_updated_at": "2026-06-15T04:21:36.717Z",
+    "quality": {
+      "total": 43,
+      "gbp": 19,
+      "license": 12,
+      "decision_maker": 0,
+      "intent": 0,
+      "reachability": 12,
+      "computed_at": "2026-06-15T04:21:36.727Z"
+    },
+    "license": {
+      "number": "CGC056812",
+      "class": "CGC",
+      "status": "active",
+      "matched_business_name": "ZYNDA CUSTOM HOMES & REMODELING INC",
+      "matched_via": "local_snapshot",
+      "discipline_count": 0,
+      "expiration_date": "2026-08-31",
+      "checked_at": "2026-06-15T04:21:28.506Z"
+    }
+  },
+  "mimir:leads:1nljvux:events": [
+    {
+      "at": "2026-06-15T04:21:27.662Z",
+      "type": "scrape",
+      "source": "multi",
+      "details": {
+        "gbp_score": 6,
+        "query": "kitchen remodeler in Lakeland FL",
+        "sources": [
+          "google_maps"
+        ]
+      }
+    }
+  ],
+  "mimir:leads:3hf692:events": [
+    {
+      "at": "2026-06-15T04:21:27.663Z",
+      "type": "scrape",
+      "source": "multi",
+      "details": {
+        "gbp_score": 7,
+        "query": "kitchen remodeler in Lakeland FL",
+        "sources": [
+          "google_maps"
+        ]
+      }
+    },
+    {
+      "at": "2026-06-15T04:21:36.770Z",
+      "type": "enrich",
+      "source": "paid",
+      "details": {
+        "email": "amanda@wallergroup.com",
+        "verification": "ok"
+      }
+    }
+  ],
+  "mimir:leads:1jcwitd:events": [
+    {
+      "at": "2026-06-15T04:21:27.664Z",
+      "type": "scrape",
+      "source": "multi",
+      "details": {
+        "gbp_score": 7,
+        "query": "kitchen remodeler in Lakeland FL",
+        "sources": [
+          "google_maps"
+        ]
+      }
+    }
+  ],
+  "mimir:leads:bpl2w1:events": [
+    {
+      "at": "2026-06-15T04:21:27.664Z",
+      "type": "scrape",
+      "source": "multi",
+      "details": {
+        "gbp_score": 7,
+        "query": "kitchen remodeler in Lakeland FL",
+        "sources": [
+          "google_maps"
+        ]
+      }
+    }
+  ],
+  "mimir:leads:tyg04m:events": [
+    {
+      "at": "2026-06-15T04:21:27.665Z",
+      "type": "scrape",
+      "source": "multi",
+      "details": {
+        "gbp_score": 7,
+        "query": "kitchen remodeler in Lakeland FL",
+        "sources": [
+          "google_maps"
+        ]
+      }
+    }
+  ],
+  "mimir:leads:15svqe6:events": [
+    {
+      "at": "2026-06-15T04:21:27.666Z",
+      "type": "scrape",
+      "source": "multi",
+      "details": {
+        "gbp_score": 7,
+        "query": "kitchen remodeler in Lakeland FL",
+        "sources": [
+          "google_maps"
+        ]
+      }
+    },
+    {
+      "at": "2026-06-15T04:21:36.772Z",
+      "type": "enrich",
+      "source": "paid",
+      "details": {
+        "email": "kevin@ckblakeland.com",
+        "verification": "ok"
+      }
+    }
+  ],
+  "mimir:leads:54tmgo:events": [
+    {
+      "at": "2026-06-15T04:21:27.667Z",
+      "type": "scrape",
+      "source": "multi",
+      "details": {
+        "gbp_score": 7,
+        "query": "kitchen remodeler in Lakeland FL",
+        "sources": [
+          "google_maps"
+        ]
+      }
+    },
+    {
+      "at": "2026-06-15T04:21:36.773Z",
+      "type": "enrich",
+      "source": "paid",
+      "details": {
+        "email": "blayne@floridakitchenbath.com",
+        "verification": "ok"
+      }
+    }
+  ],
+  "mimir:leads:4ooxan:events": [
+    {
+      "at": "2026-06-15T04:21:27.669Z",
+      "type": "scrape",
+      "source": "multi",
+      "details": {
+        "gbp_score": 7,
+        "query": "kitchen remodeler in Lakeland FL",
+        "sources": [
+          "google_maps"
+        ]
+      }
+    },
+    {
+      "at": "2026-06-15T04:21:36.775Z",
+      "type": "enrich",
+      "source": "paid",
+      "details": {
+        "email": "info@kaplanremodeling.com",
+        "verification": "ok"
+      }
+    }
+  ],
+  "mimir:search:1kfq95y": {
+    "asOf": "2026-06-15T04:21:27.677Z",
+    "query": "kitchen remodeler in Lakeland FL",
+    "scrapedCount": 14,
+    "scoredAndFiltered": [
+      {
+        "business_name": "Burns Flooring & Kitchen Design",
+        "address": "1470 Town Center Dr E, Lakeland, FL 33803",
+        "city": "Lakeland",
+        "state": "Florida",
+        "phone": "(863) 333-0780",
+        "website": "https://burnsflooringanddesign.com/",
+        "domain": "burnsflooringanddesign.com",
+        "category": "Kitchen remodeler",
+        "rating": 4.6,
+        "reviews_count": 16,
+        "photo_count": 35,
+        "categories_count": 1,
+        "has_recent_posts": false,
+        "gbp_url": "https://www.google.com/maps/search/?api=1&query=Burns%20Flooring%20%26%20Kitchen%20Design&query_place_id=ChIJQQybxR853YgRDb0RIVZfOiE",
+        "place_id": "ChIJQQybxR853YgRDb0RIVZfOiE",
+        "gbp_score": 6,
+        "score_breakdown": {
+          "photos": 2,
+          "reviews": 0,
+          "rating": 2,
+          "website": 2,
+          "categories": 0
+        }
+      },
+      {
+        "business_name": "Waller Construction and Design Center",
+        "address": "1065 Florida Ave S Suite 2, Lakeland, FL 33803",
+        "city": "Lakeland",
+        "state": "Florida",
+        "phone": "(863) 300-0351",
+        "website": "https://www.wallergroup.com/?utm_source=google&utm_medium=local",
+        "domain": "wallergroup.com",
+        "category": "General contractor",
+        "rating": 4.4,
+        "reviews_count": 51,
+        "photo_count": 31,
+        "categories_count": 1,
+        "has_recent_posts": false,
+        "gbp_url": "https://www.google.com/maps/search/?api=1&query=Waller%20Construction%20and%20Design%20Center&query_place_id=ChIJH8Xwis043YgRxfHcTYnRlu4",
+        "place_id": "ChIJH8Xwis043YgRxfHcTYnRlu4",
+        "gbp_score": 7,
+        "score_breakdown": {
+          "photos": 2,
+          "reviews": 2,
+          "rating": 1,
+          "website": 2,
+          "categories": 0
+        }
+      },
+      {
+        "business_name": "AAA Remodeling of Central Florida",
+        "address": "",
+        "city": "",
+        "state": "FL",
+        "phone": "(352) 708-1322",
+        "website": "https://aaaremodeling.biz/",
+        "domain": "aaaremodeling.biz",
+        "category": "Bathroom remodeler",
+        "rating": 5,
+        "reviews_count": 28,
+        "photo_count": 39,
+        "categories_count": 1,
+        "has_recent_posts": false,
+        "gbp_url": "https://www.google.com/maps/search/?api=1&query=AAA%20Remodeling%20of%20Central%20Florida&query_place_id=ChIJO_zmLiU144kRa8m9JuEc_Do",
+        "place_id": "ChIJO_zmLiU144kRa8m9JuEc_Do",
+        "gbp_score": 7,
+        "score_breakdown": {
+          "photos": 2,
+          "reviews": 1,
+          "rating": 2,
+          "website": 2,
+          "categories": 0
+        }
+      },
+      {
+        "business_name": "AP Remodeling and Renovation LLC",
+        "address": "",
+        "city": "",
+        "state": "FL",
+        "phone": "(407) 419-2773",
+        "website": "http://apremodelingandrenovation.com/",
+        "domain": "apremodelingandrenovation.com",
+        "category": "Construction company",
+        "rating": 5,
+        "reviews_count": 48,
+        "photo_count": 53,
+        "categories_count": 1,
+        "has_recent_posts": false,
+        "gbp_url": "https://www.google.com/maps/search/?api=1&query=AP%20Remodeling%20and%20Renovation%20LLC&query_place_id=ChIJ2T3GcRw5WycRraS7S6Gkh7c",
+        "place_id": "ChIJ2T3GcRw5WycRraS7S6Gkh7c",
+        "gbp_score": 7,
+        "score_breakdown": {
+          "photos": 2,
+          "reviews": 1,
+          "rating": 2,
+          "website": 2,
+          "categories": 0
+        }
+      },
+      {
+        "business_name": "ValuePro Remodeling",
+        "address": "2020 S Combee Rd Suite 19, Lakeland, FL 33801",
+        "city": "Lakeland",
+        "state": "Florida",
+        "phone": "(863) 614-0045",
+        "website": "https://valueproremodeling.com/",
+        "domain": "valueproremodeling.com",
+        "category": "General contractor",
+        "rating": 4.5,
+        "reviews_count": 49,
+        "photo_count": 60,
+        "categories_count": 1,
+        "has_recent_posts": false,
+        "gbp_url": "https://www.google.com/maps/search/?api=1&query=ValuePro%20Remodeling&query_place_id=ChIJj8d0Ukg_3YgRTuJUy7_ZbAs",
+        "place_id": "ChIJj8d0Ukg_3YgRTuJUy7_ZbAs",
+        "gbp_score": 7,
+        "score_breakdown": {
+          "photos": 2,
+          "reviews": 1,
+          "rating": 2,
+          "website": 2,
+          "categories": 0
+        }
+      },
+      {
+        "business_name": "True Builders Inc.",
+        "address": "2829 Badger Rd #19, Lakeland, FL 33811",
+        "city": "Lakeland",
+        "state": "Florida",
+        "phone": "(863) 804-6009",
+        "website": "https://www.true-builders.com/",
+        "domain": "true-builders.com",
+        "category": "Construction company",
+        "rating": 5,
+        "reviews_count": 46,
+        "photo_count": 91,
+        "categories_count": 1,
+        "has_recent_posts": false,
+        "gbp_url": "https://www.google.com/maps/search/?api=1&query=True%20Builders%20Inc.&query_place_id=ChIJJYfgUPo53YgR_q_cpxsWaP8",
+        "place_id": "ChIJJYfgUPo53YgR_q_cpxsWaP8",
+        "gbp_score": 7,
+        "score_breakdown": {
+          "photos": 2,
+          "reviews": 1,
+          "rating": 2,
+          "website": 2,
+          "categories": 0
+        }
+      },
+      {
+        "business_name": "Complete Kitchen & Bath",
+        "address": "5705 Florida Avenue South, 4330 Maine Ave, Lakeland, FL 33813",
+        "city": "Lakeland",
+        "state": "FL",
+        "phone": "(863) 940-9875",
+        "website": "https://ckblakeland.com/",
+        "domain": "ckblakeland.com",
+        "category": "Kitchen remodeler",
+        "rating": 4.3,
+        "reviews_count": 102,
+        "photo_count": 217,
+        "categories_count": 1,
+        "has_recent_posts": false,
+        "gbp_url": "https://www.google.com/maps/search/?api=1&query=Complete%20Kitchen%20%26%20Bath&query_place_id=ChIJXbu0Glc53YgRABmwJ9d_HAE",
+        "place_id": "ChIJXbu0Glc53YgRABmwJ9d_HAE",
+        "gbp_score": 7,
+        "score_breakdown": {
+          "photos": 2,
+          "reviews": 2,
+          "rating": 1,
+          "website": 2,
+          "categories": 0
+        }
+      },
+      {
+        "business_name": "Florida Kitchen And Bath",
+        "address": "2117 Florida Ave S, Lakeland, FL 33803",
+        "city": "Lakeland",
+        "state": "Florida",
+        "phone": "(863) 688-0480",
+        "website": "http://www.floridakitchenbath.com/",
+        "domain": "floridakitchenbath.com",
+        "category": "Kitchen remodeler",
+        "rating": 4.2,
+        "reviews_count": 55,
+        "photo_count": 36,
+        "categories_count": 1,
+        "has_recent_posts": false,
+        "gbp_url": "https://www.google.com/maps/search/?api=1&query=Florida%20Kitchen%20And%20Bath&query_place_id=ChIJHxlhqU8_3YgRWrJgS4dUMGQ",
+        "place_id": "ChIJHxlhqU8_3YgRWrJgS4dUMGQ",
+        "gbp_score": 7,
+        "score_breakdown": {
+          "photos": 2,
+          "reviews": 2,
+          "rating": 1,
+          "website": 2,
+          "categories": 0
+        }
+      },
+      {
+        "business_name": "Evangelisto Construction",
+        "address": "2424 Commerce Point Dr, Lakeland, FL 33801",
+        "city": "Lakeland",
+        "state": "Florida",
+        "phone": "(863) 617-7700",
+        "website": "https://www.evangelistoconstruction.com/",
+        "domain": "evangelistoconstruction.com",
+        "category": "Kitchen remodeler",
+        "rating": 4.9,
+        "reviews_count": 30,
+        "photo_count": 147,
+        "categories_count": 1,
+        "has_recent_posts": false,
+        "gbp_url": "https://www.google.com/maps/search/?api=1&query=Evangelisto%20Construction&query_place_id=ChIJj4WoZgA_3YgRZOQWuIDlTpU",
+        "place_id": "ChIJj4WoZgA_3YgRZOQWuIDlTpU",
+        "gbp_score": 7,
+        "score_breakdown": {
+          "photos": 2,
+          "reviews": 1,
+          "rating": 2,
+          "website": 2,
+          "categories": 0
+        }
+      },
+      {
+        "business_name": "Kaplan Remodeling",
+        "address": "",
+        "city": "",
+        "state": "FL",
+        "phone": "(407) 212-7887",
+        "website": "http://kaplanremodeling.com/",
+        "domain": "kaplanremodeling.com",
+        "category": "General contractor",
+        "rating": 4.9,
+        "reviews_count": 35,
+        "photo_count": 115,
+        "categories_count": 1,
+        "has_recent_posts": false,
+        "gbp_url": "https://www.google.com/maps/search/?api=1&query=Kaplan%20Remodeling&query_place_id=ChIJR8lvzZpx54gRjEfSpza75yc",
+        "place_id": "ChIJR8lvzZpx54gRjEfSpza75yc",
+        "gbp_score": 7,
+        "score_breakdown": {
+          "photos": 2,
+          "reviews": 1,
+          "rating": 2,
+          "website": 2,
+          "categories": 0
+        }
+      }
+    ],
+    "filter": {
+      "score_min": 3,
+      "score_max": 7
+    },
+    "sources_used": [
+      {
+        "name": "google_maps",
+        "raw_count": 15,
+        "status": "ok"
+      },
+      {
+        "name": "yelp",
+        "raw_count": 0,
+        "status": "empty"
+      },
+      {
+        "name": "bbb",
+        "raw_count": 0,
+        "status": "empty"
+      }
+    ]
+  }
+}

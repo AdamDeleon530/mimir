@@ -15,6 +15,13 @@
  *   sent_counts_by_inbox_day: throttling tracker, "{email}|{YYYY-MM-DD}" → count
  */
 import { kv } from './kv'
+import {
+  blockedFromContact,
+  upsertLead,
+  recordInteraction,
+  markDoNotContact,
+  normalizeDomain,
+} from './lead-db'
 
 const QUEUE_KEY = 'mimir:queue'
 
@@ -93,8 +100,18 @@ export async function queueLead(
   lead: Omit<SequencedLead, 'current_step' | 'next_send_at' | 'status' | 'history' | 'queued_at'>,
 ): Promise<{ added: boolean; reason?: string }> {
   const state = await loadState()
+
+  // Hard checks BEFORE queueing — protect deliverability.
+  // 1. Already queued
   const existing = state.sequences.find(s => s.email.toLowerCase() === lead.email.toLowerCase())
   if (existing) return { added: false, reason: `already in queue (status: ${existing.status})` }
+
+  // 2. Suppression / history check via lead DB (per-domain, not per-email)
+  const domain = domainFromEmail(lead.email)
+  if (domain) {
+    const blocked = await blockedFromContact(domain, 90)
+    if (blocked) return { added: false, reason: blocked }
+  }
 
   const nextSend = nextBusinessMorning()
   state.sequences.push({
@@ -106,7 +123,28 @@ export async function queueLead(
     queued_at: new Date().toISOString(),
   })
   await saveState(state)
+
+  // Mirror status into lead DB so listLeads filters are accurate
+  if (domain) {
+    try {
+      await upsertLead({
+        domain,
+        business_name: lead.company_name,
+        city: lead.city,
+        niche: lead.niche,
+        status: 'queued',
+      })
+      await recordInteraction(domain, {
+        type: 'queued',
+        details: { email: lead.email, sequence: 'polk_relaxed_v1' },
+      })
+    } catch { /* best-effort */ }
+  }
   return { added: true }
+}
+
+function domainFromEmail(email: string): string {
+  return normalizeDomain((email.split('@')[1] ?? ''))
 }
 
 export async function pauseLead(
@@ -118,6 +156,18 @@ export async function pauseLead(
   if (!lead) return false
   lead.status = reason
   await saveState(state)
+
+  // Mirror to lead DB — replied/unsub/bounced are all DNC-worthy
+  const domain = domainFromEmail(email)
+  if (domain) {
+    try {
+      if (reason === 'replied' || reason === 'unsubscribed' || reason === 'bounced') {
+        await markDoNotContact(domain, reason === 'replied' ? 'replied' : reason)
+      } else {
+        await recordInteraction(domain, { type: 'paused', details: { reason } })
+      }
+    } catch { /* best-effort */ }
+  }
   return true
 }
 
@@ -154,6 +204,44 @@ export async function recordSend(
     }
   }
   await saveState(state)
+
+  // Mirror to lead DB
+  const domain = domainFromEmail(email)
+  if (domain) {
+    try {
+      if (event.status === 'sent') {
+        await upsertLead({
+          domain,
+          business_name: lead.company_name,
+          status: 'contacted',
+          last_contacted_at: event.sent_at,
+        })
+        await recordInteraction(domain, {
+          type: 'email_sent',
+          source: event.inbox,
+          details: { step: event.step, subject: event.subject },
+        })
+      } else if (event.status === 'failed') {
+        // Auto-suppress on hard bounce signals (transport-level errors usually
+        // mean dead address — protect domain reputation).
+        const err = (event.error ?? '').toLowerCase()
+        const isHardBounce =
+          err.includes('550') || err.includes('mailbox unavailable') ||
+          err.includes('user unknown') || err.includes('no such user') ||
+          err.includes('does not exist') || err.includes('recipient address rejected')
+        if (isHardBounce) {
+          await markDoNotContact(domain, 'bounced')
+          lead.status = 'bounced'
+          await saveState(state)
+        }
+        await recordInteraction(domain, {
+          type: 'email_sent',
+          source: event.inbox,
+          details: { step: event.step, status: 'failed', error: event.error },
+        })
+      }
+    } catch { /* best-effort */ }
+  }
 }
 
 export async function inboxSentToday(

@@ -17,7 +17,10 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "typecheck": "nuxt typecheck",
-    "sync-ops": "tsx scripts/sync-ops-context.ts"
+    "sync-ops": "tsx scripts/sync-ops-context.ts",
+    "sync-dbpr": "tsx scripts/sync-dbpr.ts",
+    "refresh-dbpr": "tsx scripts/sync-dbpr.ts",
+    "seed-leads": "tsx scripts/seed-leads.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.1",

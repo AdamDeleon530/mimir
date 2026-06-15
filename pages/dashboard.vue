@@ -1,7 +1,7 @@
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
 
-const { messages, sending, send, lastReply, activeTools, clear: clearConversation, loadMemory } = useMimir()
+const { messages, sending, send, lastReply, clear: clearConversation, loadMemory } = useMimir()
 const {
   listening, transcribing, speaking, transcript,
   startListening, stopListening, speak, stopSpeaking,
@@ -11,16 +11,17 @@ const {
 const input = ref('')
 const messagesRef = ref<HTMLElement | null>(null)
 const voiceMode = ref(true)
+const drawerOpen = ref(false)
 
-// Live agency status for the side panels
 interface AgencyStatus {
   asOf: string
   ops: { fileCount: number; syncedAt: string; isEmpty: boolean }
-  money: { mtdRevenue: number; mrr: number; burnMTD: number; note?: string }
+  money: { mtdRevenue: number | null; mrr: number | null; burnMTD: number | null; note?: string }
   pipeline: { stages: Array<{ name: string; count: number; value: number }>; note?: string }
   replies: { pending: number; note?: string }
-  outbound: { bounceRate7d: number; complaintRate7d: number; inboxes: unknown[]; note?: string }
+  outbound: { bounceRate7d: number | null; complaintRate7d: number | null; inboxes: unknown[]; note?: string }
 }
+
 const { data: status, refresh: refreshStatus } = await useAsyncData<AgencyStatus>(
   'agency-status',
   () => $fetch('/api/agency-status'),
@@ -30,11 +31,11 @@ const { data: status, refresh: refreshStatus } = await useAsyncData<AgencyStatus
 const now = ref(new Date())
 let clockId: ReturnType<typeof setInterval> | null = null
 
-// Auto-refresh agency status every 60s.
-// Tracks lastRefreshAt so we can surface "Xs ago" and a stale warning.
+// Status freshness
 const lastRefreshAt = ref(new Date())
 const statusError = ref<string | null>(null)
 let refreshId: ReturnType<typeof setInterval> | null = null
+
 async function autoRefresh(): Promise<void> {
   try {
     await refreshStatus()
@@ -45,23 +46,28 @@ async function autoRefresh(): Promise<void> {
   }
 }
 
+function handleKeydown(e: KeyboardEvent): void {
+  if (e.key === 'Escape' && drawerOpen.value) drawerOpen.value = false
+}
+
 onMounted(() => {
   clockId = setInterval(() => { now.value = new Date() }, 1000)
   refreshId = setInterval(autoRefresh, 60_000)
+  document.addEventListener('keydown', handleKeydown)
   void loadMemory()
 })
+
 onUnmounted(() => {
   if (clockId) clearInterval(clockId)
   if (refreshId) clearInterval(refreshId)
+  document.removeEventListener('keydown', handleKeydown)
 })
 
 const statusAgeSec = computed(() => Math.floor((now.value.getTime() - lastRefreshAt.value.getTime()) / 1000))
-const statusIsStale = computed(() => statusAgeSec.value > 300)  // >5 min = stale
-
+const statusIsStale = computed(() => statusAgeSec.value > 300)
 const timeStr = computed(() => now.value.toLocaleTimeString('en-US', { hour12: false }))
-const dateStr = computed(() => now.value.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }))
+const dateStr = computed(() => now.value.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }))
 
-// Reactor state derived from voice/chat state
 type ReactorState = 'idle' | 'listening' | 'transcribing' | 'consulting' | 'speaking'
 const reactorState = computed<ReactorState>(() => {
   if (speaking.value) return 'speaking'
@@ -81,13 +87,13 @@ const statusLine = computed(() => {
   }
 })
 
-// Scroll messages on update
+// Scroll conversation to bottom on new messages
 watch(messages, async () => {
   await nextTick()
   messagesRef.value?.scrollTo({ top: messagesRef.value.scrollHeight, behavior: 'smooth' })
 }, { deep: true })
 
-// When Scribe returns a transcript, submit
+// Auto-submit when voice transcript arrives
 watch(transcript, (t) => {
   if (t && !listening.value && !transcribing.value) {
     input.value = t
@@ -95,774 +101,695 @@ watch(transcript, (t) => {
   }
 })
 
-// When Mimir replies, speak it if voice mode is on
+// Speak reply if voice mode is on
 watch(lastReply, (reply) => {
   if (reply && voiceMode.value) void speak(reply)
 })
 
-async function submit() {
+async function submit(): Promise<void> {
   const text = input.value.trim()
   if (!text || sending.value) return
   input.value = ''
   await send(text)
 }
 
-function toggleMic() {
-  // If Mimir is mid-speech, the mic button acts as an interrupt.
-  if (speaking.value) {
-    stopSpeaking()
-    return
-  }
+function toggleMic(): void {
+  if (speaking.value) { stopSpeaking(); return }
   if (listening.value) stopListening()
   else void startListening()
 }
 
-function dollars(n: number): string {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n)
-}
-
-function timeAgo(iso: string): string {
-  const t = new Date(iso).getTime()
-  if (!t) return 'never'
-  const diffSec = Math.floor((Date.now() - t) / 1000)
-  if (diffSec < 60) return `${diffSec}s ago`
-  if (diffSec < 3600) return `${Math.floor(diffSec / 60)}m ago`
-  if (diffSec < 86400) return `${Math.floor(diffSec / 3600)}h ago`
-  return `${Math.floor(diffSec / 86400)}d ago`
-}
+// Hint suggestions for empty conversation state
+const hints = ['how\'s pipeline', 'what\'s in the copywriter agent', 'tier deliverables'] as const
 </script>
 
 <template>
-  <div class="jarvis">
-    <!-- ============ HEADER ============ -->
-    <header class="jarvis__header">
-      <div class="brand">
-        <span class="brand__rune">ᚾ</span>
-        <span class="brand__name">M·I·M·I·R</span>
-        <span :class="['brand__status', `brand__status--${reactorState}`]">
-          <span class="brand__dot"></span>
+  <div class="root">
+
+    <!-- ══════════ HEADER ══════════ -->
+    <header class="header">
+      <!-- Brand -->
+      <div class="flex items-center gap-2.5">
+        <span class="rune" aria-hidden="true">ᚾ</span>
+        <span class="font-serif text-[15px] tracking-[0.28em]" style="color: #F5F2EC;">M·I·M·I·R</span>
+      </div>
+
+      <!-- Nav chips -->
+      <nav class="flex items-center gap-1" aria-label="Mimir navigation">
+        <NuxtLink to="/leads"     class="chip">leads</NuxtLink>
+        <NuxtLink to="/markets"   class="chip">markets</NuxtLink>
+        <NuxtLink to="/briefings" class="chip">briefings</NuxtLink>
+      </nav>
+
+      <!-- Reactor state indicator -->
+      <div class="flex items-center gap-2" aria-live="polite" aria-atomic="true">
+        <span
+          :class="['state-dot', reactorState !== 'idle' ? 'state-dot--active' : '']"
+          aria-hidden="true"
+        ></span>
+        <span class="font-mono text-[10px] tracking-wider hidden sm:block" style="color: rgba(245,242,236,0.38);">
           {{ reactorState === 'idle' ? 'online' : reactorState }}
         </span>
       </div>
-
-      <div class="header__clock">
-        <span class="header__time">{{ timeStr }}</span>
-        <span class="header__sep">|</span>
-        <span class="header__date">{{ dateStr }}</span>
-      </div>
-
-      <div class="header__meta">
-        <span class="header__loc">Winter Haven · FL</span>
-        <span
-          :class="['header__freshness', statusIsStale ? 'header__freshness--stale' : '']"
-          :title="statusError ?? `updated ${statusAgeSec}s ago`"
-        >
-          {{ statusError ? '⚠ stale' : statusAgeSec < 60 ? `updated ${statusAgeSec}s ago` : `updated ${Math.floor(statusAgeSec/60)}m ago` }}
-        </span>
-        <button @click="autoRefresh()" class="header__link" title="Refresh agency status">↻</button>
-      </div>
     </header>
 
-    <!-- ============ MAIN GRID ============ -->
-    <main class="jarvis__grid">
-      <!-- ====== LEFT PANELS ====== -->
-      <aside class="jarvis__left">
-        <section class="panel">
-          <header class="panel__head">
-            <span class="panel__title">Agency Pulse</span>
-            <button @click="refreshStatus()" class="panel__refresh" title="Refresh">↻</button>
-          </header>
-          <div class="panel__body">
-            <div class="metric metric--lead">
-              <div class="metric__label">MTD Revenue</div>
-              <div class="metric__value">{{ status ? dollars(status.money.mtdRevenue) : '—' }}</div>
+    <!-- ══════════ MAIN ══════════ -->
+    <main class="main">
+
+      <!-- Drawer (fixed, manages its own positioning) -->
+      <MimirDrawer
+        v-model="drawerOpen"
+        :status="status"
+        @refresh="autoRefresh"
+      />
+
+      <!-- Center surface: reactor → conversation -->
+      <div class="center">
+
+        <!-- Reactor section (flex-none — stays pinned at top) -->
+        <section class="reactor-section" aria-label="Mimir status">
+          <div class="reactor-container">
+            <MimirReactor :state="reactorState" />
+          </div>
+
+          <h1 class="font-serif text-[20px] tracking-[0.32em] -mt-2" style="color: rgba(245,242,236,0.88);">
+            M·I·M·I·R
+          </h1>
+
+          <div :class="['status-pill', reactorState !== 'idle' && 'status-pill--active']" role="status">
+            <span class="w-1 h-1 rounded-full bg-current shrink-0" aria-hidden="true"></span>
+            {{ statusLine }}
+          </div>
+
+          <!-- Empty state hint (no messages, idle) -->
+          <div v-if="!messages.length && reactorState === 'idle'" class="hint-block">
+            <p class="font-serif italic text-[13px]" style="color: rgba(245,242,236,0.28);">
+              "speak, and the watch will answer."
+            </p>
+            <p class="mt-3 font-mono text-[10px] tracking-wide flex flex-wrap items-center justify-center gap-x-2 gap-y-1" style="color: rgba(245,242,236,0.2);">
+              <template v-for="(hint, i) in hints" :key="hint">
+                <button type="button" @click="input = hint" class="hint-btn">{{ hint }}</button>
+                <span v-if="i < hints.length - 1" aria-hidden="true" style="color: rgba(245,242,236,0.12);">·</span>
+              </template>
+            </p>
+          </div>
+        </section>
+
+        <!-- Conversation (flex-1, scrolls independently) -->
+        <section
+          ref="messagesRef"
+          class="convo"
+          aria-label="Conversation with Mimir"
+          aria-live="polite"
+          aria-relevant="additions"
+        >
+          <div class="convo-inner">
+            <div
+              v-for="(msg, i) in messages"
+              :key="i"
+              class="msg-row"
+            >
+              <!-- Role label -->
+              <p :class="['msg-label', msg.role === 'user' ? 'msg-label--user' : '']">
+                <template v-if="msg.role === 'assistant'">
+                  <span aria-hidden="true" style="color: rgba(184,115,51,0.6); margin-right: 4px;">ᚾ</span>Mimir
+                </template>
+                <template v-else>You</template>
+              </p>
+
+              <!-- Tool trace -->
+              <ul v-if="msg.toolUse?.length" class="tool-list" aria-label="Tools Mimir called">
+                <li
+                  v-for="(tu, ti) in msg.toolUse"
+                  :key="ti"
+                  :class="['tool-item', tu.state === 'running' ? 'tool-item--running' : 'tool-item--done']"
+                >
+                  <span class="tool-icon" aria-hidden="true">{{ tu.state === 'running' ? '◌' : '✓' }}</span>
+                  <span class="tool-name">{{ tu.name }}</span>
+                </li>
+              </ul>
+
+              <!-- Message body -->
+              <div
+                v-if="msg.content"
+                :class="['msg-body', msg.role === 'user' ? 'msg-body--user' : 'msg-body--assistant']"
+              >{{ msg.content }}</div>
+
+              <!-- Pending placeholder -->
+              <p
+                v-else-if="msg.role === 'assistant' && sending && i === messages.length - 1"
+                class="font-serif italic text-[13px] mt-1"
+                style="color: rgba(245,242,236,0.28);"
+                aria-label="Mimir is thinking"
+              >consulting the well…</p>
             </div>
-            <div class="metric-grid">
-              <div class="metric">
-                <div class="metric__label">MRR</div>
-                <div class="metric__value">{{ status ? dollars(status.money.mrr) : '—' }}</div>
-              </div>
-              <div class="metric">
-                <div class="metric__label">Burn</div>
-                <div class="metric__value">{{ status ? dollars(status.money.burnMTD) : '—' }}</div>
-              </div>
+
+            <!-- Clear button (appears after a few messages to avoid noise) -->
+            <div v-if="messages.length > 3" class="flex justify-center pt-8 pb-2">
+              <button @click="clearConversation()" class="clear-btn">clear conversation</button>
             </div>
           </div>
         </section>
 
-        <section class="panel">
-          <header class="panel__head">
-            <span class="panel__title">Outbound</span>
-          </header>
-          <div class="panel__body">
-            <div class="metric-grid">
-              <div class="metric">
-                <div class="metric__label">Bounce 7d</div>
-                <div class="metric__value">{{ status ? (status.outbound.bounceRate7d.toFixed(1) + '%') : '—' }}</div>
-              </div>
-              <div class="metric">
-                <div class="metric__label">Replies</div>
-                <div class="metric__value">{{ status?.replies.pending ?? '—' }}</div>
-              </div>
-            </div>
-            <div class="pipeline-mini">
-              <div v-for="stage in status?.pipeline.stages ?? []" :key="stage.name" class="pipeline-mini__stage">
-                <div class="pipeline-mini__count">{{ stage.count }}</div>
-                <div class="pipeline-mini__name">{{ stage.name }}</div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section class="panel">
-          <header class="panel__head">
-            <span class="panel__title">Ops Library</span>
-          </header>
-          <div class="panel__body">
-            <div class="lib-status">
-              <div class="lib-status__count">{{ status?.ops.fileCount ?? 0 }}</div>
-              <div class="lib-status__label">files synced</div>
-            </div>
-            <div class="lib-status__when">
-              {{ status?.ops.isEmpty
-                ? 'run `pnpm sync-ops` to load'
-                : 'synced ' + timeAgo(status?.ops.syncedAt ?? '') }}
-            </div>
-            <div :class="['lib-status__ok', status?.ops.isEmpty ? 'lib-status__ok--off' : 'lib-status__ok--on']">
-              {{ status?.ops.isEmpty ? '○ context offline' : '● context active' }}
-            </div>
-          </div>
-        </section>
-      </aside>
-
-      <!-- ====== CENTER REACTOR ====== -->
-      <section class="jarvis__center">
-        <MimirReactor :state="reactorState" />
-        <div class="reactor-title">M·I·M·I·R</div>
-        <div :class="['reactor-status', `reactor-status--${reactorState}`]">
-          <span class="reactor-status__dot"></span>
-          {{ statusLine }}
-        </div>
-        <div v-if="!messages.length && reactorState === 'idle'" class="reactor-hint">
-          <em>"speak, and the watch will answer."</em>
-          <div class="reactor-hint__prompts">
-            try: <span>how's pipeline</span> · <span>what's in the copywriter agent</span> · <span>tier deliverables</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- ====== RIGHT CONVERSATION ====== -->
-      <aside class="jarvis__right">
-        <header class="panel__head panel__head--full">
-          <span class="panel__title">Conversation</span>
-          <span class="panel__msg-count" v-if="messages.length">{{ messages.length }}</span>
-          <button
-            v-if="messages.length"
-            @click="clearConversation()"
-            class="panel__refresh panel__clear"
-            title="Clear conversation memory"
-          >×</button>
-        </header>
-        <div ref="messagesRef" class="convo">
-          <div v-if="!messages.length" class="convo__empty">
-            Ask Mimir anything about the agency. He reads from your full ops library.
-          </div>
-          <div v-for="(msg, i) in messages" :key="i" :class="['msg', `msg--${msg.role}`]">
-            <div v-if="msg.role === 'assistant'" class="msg__head">
-              <span class="msg__rune">ᚾ</span> Mimir
-            </div>
-            <div v-else class="msg__head">You</div>
-            <!-- Inline tool trace (read-only, dimmed) -->
-            <ul v-if="msg.toolUse && msg.toolUse.length" class="msg__tools">
-              <li v-for="(tu, ti) in msg.toolUse" :key="ti" :class="['msg__tool', `msg__tool--${tu.state}`]">
-                <span class="msg__tool-icon">{{ tu.state === 'running' ? '◌' : '✓' }}</span>
-                <span class="msg__tool-name">{{ tu.name }}</span>
-              </li>
-            </ul>
-            <div class="msg__body" v-if="msg.content">{{ msg.content }}</div>
-            <div v-else-if="msg.role === 'assistant' && sending && i === messages.length - 1" class="msg__body msg__body--pending">
-              <em>consulting the well…</em>
-            </div>
-          </div>
-        </div>
-      </aside>
+      </div>
     </main>
 
-    <!-- ============ BOTTOM CONTROLS ============ -->
-    <footer class="jarvis__footer">
-      <div v-if="voiceError" class="voice-error">{{ voiceError }}</div>
+    <!-- ══════════ FOOTER ══════════ -->
+    <footer class="footer">
 
-      <div class="controls">
+      <!-- Voice error banner -->
+      <div v-if="voiceError" class="voice-error" role="alert">{{ voiceError }}</div>
+
+      <!-- Input bar -->
+      <form @submit.prevent="submit" class="input-bar">
+
+        <!-- Voice mode toggle chip -->
         <button
+          type="button"
           @click="voiceMode = !voiceMode"
-          :class="['ctrl-btn', voiceMode ? 'ctrl-btn--on' : '']"
-          :title="voiceMode ? 'Voice responses on' : 'Voice responses off'"
+          :class="['voice-chip', voiceMode ? 'voice-chip--on' : '']"
+          :title="voiceMode ? 'Voice responses on — click to mute' : 'Voice responses off — click to enable'"
+          :aria-pressed="voiceMode"
+          aria-label="Toggle voice responses"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="ctrl-btn__icon">
+          <!-- Speaker on -->
+          <svg v-if="voiceMode" viewBox="0 0 24 24" fill="currentColor" class="w-3 h-3" aria-hidden="true">
             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z"/>
           </svg>
+          <!-- Speaker off -->
+          <svg v-else viewBox="0 0 24 24" fill="currentColor" class="w-3 h-3" aria-hidden="true">
+            <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+          </svg>
+          <span class="text-[9px] font-mono tracking-wider uppercase select-none">
+            {{ voiceMode ? 'voice' : 'muted' }}
+          </span>
         </button>
 
-        <!-- Stop button — only visible while Mimir is speaking -->
+        <!-- Text input -->
+        <input
+          v-model="input"
+          type="text"
+          :placeholder="listening ? 'listening…' : transcribing ? 'transcribing…' : 'ask mimir anything…'"
+          :disabled="transcribing"
+          class="input-field"
+          aria-label="Message to Mimir"
+          autocomplete="off"
+        />
+
+        <!-- Stop (when Mimir is speaking) -->
         <button
           v-if="speaking"
+          type="button"
           @click="stopSpeaking()"
           class="ctrl-btn ctrl-btn--stop"
-          title="silence mimir"
+          title="Silence Mimir"
+          aria-label="Stop Mimir from speaking"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="ctrl-btn__icon">
-            <rect x="6" y="6" width="12" height="12" rx="1.5" />
+          <svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4" aria-hidden="true">
+            <rect x="6" y="6" width="12" height="12" rx="2" />
           </svg>
         </button>
 
+        <!-- Mic (when voice mode on and not speaking) -->
         <button
-          v-if="isVoiceAvailable"
+          v-else-if="isVoiceAvailable && voiceMode"
+          type="button"
           @click="toggleMic"
-          :class="[
-            'ctrl-btn',
-            'ctrl-btn--mic',
-            listening ? 'ctrl-btn--recording' : '',
-            speaking ? 'ctrl-btn--interrupt' : '',
-          ]"
-          :title="speaking ? 'tap to interrupt' : listening ? 'stop recording' : 'press to talk'"
+          :class="['ctrl-btn', listening ? 'ctrl-btn--recording' : '']"
+          :title="listening ? 'Stop recording' : 'Press to talk'"
+          :aria-label="listening ? 'Stop recording' : 'Start voice input'"
+          :aria-pressed="listening"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="ctrl-btn__icon">
+          <svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4" aria-hidden="true">
             <path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
             <path d="M19 11a1 1 0 1 0-2 0 5 5 0 0 1-10 0 1 1 0 1 0-2 0 7 7 0 0 0 6 6.93V21a1 1 0 1 0 2 0v-3.07A7 7 0 0 0 19 11z"/>
           </svg>
         </button>
 
-        <form @submit.prevent="submit" class="input-form">
-          <input
-            v-model="input"
-            type="text"
-            :placeholder="listening ? 'listening…' : transcribing ? 'transcribing…' : 'speak to mimir'"
-            :disabled="transcribing"
-            class="input-form__field"
-          />
-          <button type="submit" :disabled="!input.trim() || sending" class="ctrl-btn ctrl-btn--send">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="ctrl-btn__icon">
-              <path d="M3.4 20.4l17.45-7.48a1 1 0 0 0 0-1.84L3.4 3.6a.993.993 0 0 0-1.39.91L2 9.12c0 .5.37.93.87.99L17 12 2.87 13.88c-.5.07-.87.5-.87 1l.01 4.61c0 .71.73 1.2 1.39.91z"/>
-            </svg>
-          </button>
-        </form>
+        <!-- Send (when there's text and not already sending) -->
+        <button
+          v-if="input.trim() && !sending"
+          type="submit"
+          class="ctrl-btn ctrl-btn--send"
+          title="Send message"
+          aria-label="Send message"
+        >
+          <svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4" aria-hidden="true">
+            <path d="M3.4 20.4l17.45-7.48a1 1 0 0 0 0-1.84L3.4 3.6a.993.993 0 0 0-1.39.91L2 9.12c0 .5.37.93.87.99L17 12 2.87 13.88c-.5.07-.87.5-.87 1l.01 4.61c0 .71.73 1.2 1.39.91z"/>
+          </svg>
+        </button>
+
+      </form>
+
+      <!-- Status strip -->
+      <div class="status-strip" aria-label="System status">
+        <span class="font-mono tabular-nums">{{ timeStr }}</span>
+        <span class="strip-sep" aria-hidden="true"></span>
+        <span>Winter Haven · FL</span>
+        <span class="strip-sep" aria-hidden="true"></span>
+        <span :class="statusIsStale ? 'stale' : ''">
+          {{ statusError ? '⚠ stale' : statusAgeSec < 60 ? `${statusAgeSec}s ago` : `${Math.floor(statusAgeSec / 60)}m ago` }}
+        </span>
+        <button
+          type="button"
+          @click="autoRefresh()"
+          class="strip-refresh"
+          title="Refresh agency status"
+          aria-label="Refresh agency status"
+        >↻</button>
+        <span class="strip-sep hidden sm:block" aria-hidden="true"></span>
+        <span class="hidden sm:block">{{ dateStr }}</span>
       </div>
+
     </footer>
+
   </div>
 </template>
 
 <style scoped>
-.jarvis {
-  --bg: #07090f;
-  --bg-2: #0c1119;
-  --panel: rgba(201, 166, 74, 0.04);
-  --panel-border: rgba(201, 166, 74, 0.18);
-  --panel-border-strong: rgba(201, 166, 74, 0.35);
-  --gold: #c9a64a;
-  --gold-bright: #d4b25c;
-  --gold-dim: #8b7045;
-  --text: #e8e2d0;
-  --text-dim: rgba(232, 226, 208, 0.55);
-  --text-faint: rgba(232, 226, 208, 0.3);
-  --critred: #c43838;
-  --critgreen: #3a8a3a;
-  --bg-grad: radial-gradient(ellipse at 50% -20%, rgba(201, 166, 74, 0.08), transparent 60%),
-             linear-gradient(180deg, #0a0e1a 0%, #07090f 100%);
-
-  height: 100vh;
-  background: var(--bg-grad);
-  color: var(--text);
+/* ── Root ── */
+.root {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: #0F1B2D;
+  color: #F5F2EC;
   font-family: 'Inter', system-ui, sans-serif;
-  display: grid;
-  grid-template-rows: 64px 1fr 96px;
   overflow: hidden;
 }
 
-/* === HEADER === */
-.jarvis__header {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+/* ── Header ── */
+.header {
+  display: flex;
   align-items: center;
+  justify-content: space-between;
+  height: 56px;
   padding: 0 24px;
-  border-bottom: 1px solid var(--panel-border);
-  background: linear-gradient(180deg, rgba(201, 166, 74, 0.04), transparent);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  background: linear-gradient(180deg, rgba(255,255,255,0.015) 0%, transparent 100%);
+  flex-shrink: 0;
 }
-.brand { display: flex; align-items: center; gap: 12px; }
-.brand__rune { color: var(--gold-bright); font-size: 22px; filter: drop-shadow(0 0 6px var(--gold)); }
-.brand__name {
-  font-family: 'Fraunces', Georgia, serif;
+
+.rune {
   font-size: 18px;
-  letter-spacing: 0.25em;
-  color: var(--text);
+  color: #B87333;
+  filter: drop-shadow(0 0 6px rgba(184,115,51,0.4));
 }
-.brand__status {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 3px 10px;
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  border: 1px solid var(--panel-border);
-  border-radius: 999px;
-  background: rgba(58, 138, 58, 0.08);
-  color: var(--critgreen);
-  margin-left: 8px;
-}
-.brand__status--listening,
-.brand__status--speaking,
-.brand__status--consulting,
-.brand__status--transcribing {
-  background: rgba(201, 166, 74, 0.1);
-  color: var(--gold);
-  border-color: var(--panel-border-strong);
-}
-.brand__dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: currentColor;
-  box-shadow: 0 0 6px currentColor;
-}
-.header__clock {
-  display: flex; align-items: center; gap: 14px;
-  padding: 8px 16px;
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  border: 1px solid var(--panel-border);
-  border-radius: 8px;
-  background: var(--panel);
-}
-.header__time { color: var(--gold-bright); font-size: 16px; letter-spacing: 0.1em; }
-.header__sep { color: var(--text-faint); }
-.header__date { color: var(--text-dim); font-size: 13px; }
-.header__meta {
-  display: flex; align-items: center; justify-content: flex-end; gap: 16px;
-}
-.header__loc {
-  font-size: 12px;
-  letter-spacing: 0.12em;
-  color: var(--text-dim);
-}
-.header__link {
-  width: 32px; height: 32px;
-  display: inline-flex; align-items: center; justify-content: center;
-  border: 1px solid var(--panel-border);
+
+/* ── Nav chips ── */
+.chip {
+  display: inline-block;
+  padding: 5px 12px;
   border-radius: 6px;
-  background: var(--panel);
-  color: var(--text-dim);
-  text-decoration: none;
-  transition: all 0.2s;
-}
-.header__link:hover { color: var(--gold); border-color: var(--panel-border-strong); }
-.header__freshness {
-  font-size: 11px;
   font-family: 'JetBrains Mono', monospace;
-  color: var(--text-dim);
-  opacity: 0.6;
-  letter-spacing: 0.02em;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: rgba(245,242,236,0.35);
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: color 150ms, background 150ms, border-color 150ms;
 }
-.header__freshness--stale {
-  color: #d97a4a;
-  opacity: 1;
-  font-weight: 500;
+.chip:hover {
+  color: rgba(245,242,236,0.7);
+  background: rgba(255,255,255,0.04);
+}
+.chip.router-link-active {
+  color: #B87333;
+  background: rgba(184,115,51,0.08);
+  border-color: rgba(184,115,51,0.22);
 }
 
-/* === GRID === */
-.jarvis__grid {
-  display: grid;
-  grid-template-columns: 280px 1fr 360px;
-  gap: 16px;
-  padding: 16px 24px;
+/* ── State dot ── */
+.state-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(74,222,128,0.6);
+  box-shadow: 0 0 5px rgba(74,222,128,0.35);
+  flex-shrink: 0;
+}
+.state-dot--active {
+  background: #B87333;
+  box-shadow: 0 0 6px rgba(184,115,51,0.5);
+  animation: dot-pulse 1.4s ease-in-out infinite;
+}
+
+/* ── Main ── */
+.main {
+  flex: 1;
   min-height: 0;
-}
-
-/* === PANELS === */
-.panel {
-  background: var(--panel);
-  border: 1px solid var(--panel-border);
-  border-radius: 8px;
   overflow: hidden;
   position: relative;
 }
-.panel::before {
-  content: '';
-  position: absolute; top: 0; left: 0; width: 24px; height: 1px;
-  background: var(--gold);
-  box-shadow: 0 0 6px var(--gold);
-}
-.panel__head {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--panel-border);
-  background: linear-gradient(180deg, rgba(201, 166, 74, 0.06), transparent);
-}
-.panel__head--full {
-  padding: 12px 16px;
-}
-.panel__title {
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--gold);
-}
-.panel__refresh {
-  background: none; border: none;
-  color: var(--text-dim);
-  cursor: pointer;
-  font-size: 16px;
-  line-height: 1;
-}
-.panel__refresh:hover { color: var(--gold); }
-.panel__clear { margin-left: 8px; font-size: 16px; line-height: 1; }
-.panel__msg-count {
-  font-size: 11px;
-  color: var(--text-dim);
-  padding: 2px 8px;
-  border: 1px solid var(--panel-border);
-  border-radius: 999px;
-}
-.panel__body { padding: 14px; }
 
-.metric { margin: 0; }
-.metric--lead { margin-bottom: 12px; }
-.metric__label {
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--text-faint);
-  margin-bottom: 4px;
-}
-.metric__value {
-  font-family: 'Fraunces', Georgia, serif;
-  font-size: 20px;
-  color: var(--gold-bright);
-}
-.metric--lead .metric__value { font-size: 28px; }
-.metric-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.pipeline-mini {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid var(--panel-border);
-}
-.pipeline-mini__stage { text-align: center; }
-.pipeline-mini__count {
-  font-family: 'Fraunces', Georgia, serif;
-  font-size: 16px;
-  color: var(--text);
-}
-.pipeline-mini__name {
-  font-size: 9px;
-  letter-spacing: 0.08em;
-  color: var(--text-faint);
-  text-transform: uppercase;
-  margin-top: 2px;
-  line-height: 1.2;
-}
-
-.lib-status {
-  text-align: center;
-  margin-bottom: 8px;
-}
-.lib-status__count {
-  font-family: 'Fraunces', Georgia, serif;
-  font-size: 36px;
-  color: var(--gold-bright);
-  line-height: 1;
-}
-.lib-status__label {
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--text-faint);
-  margin-top: 4px;
-}
-.lib-status__when {
-  font-size: 11px;
-  color: var(--text-dim);
-  text-align: center;
-  margin: 8px 0;
-}
-.lib-status__ok {
-  font-size: 10px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  text-align: center;
-  padding: 4px 0;
-}
-.lib-status__ok--on { color: var(--critgreen); }
-.lib-status__ok--off { color: var(--gold-dim); }
-
-.jarvis__left {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  min-height: 0;
-  overflow-y: auto;
-}
-
-/* === CENTER === */
-.jarvis__center {
+/* ── Center surface ── */
+.center {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  text-align: center;
-  position: relative;
-  min-height: 0;
+  height: 100%;
+  overflow: hidden;
 }
-.reactor-title {
-  font-family: 'Fraunces', Georgia, serif;
-  font-size: 28px;
-  letter-spacing: 0.35em;
-  color: var(--text);
-  margin-top: -16px;
-}
-.reactor-status {
-  display: inline-flex; align-items: center; gap: 8px;
-  margin-top: 12px;
-  padding: 6px 14px;
-  font-size: 11px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  border: 1px solid var(--panel-border);
-  border-radius: 999px;
-  background: var(--panel);
-  color: var(--text-dim);
-}
-.reactor-status--listening,
-.reactor-status--speaking,
-.reactor-status--consulting,
-.reactor-status--transcribing {
-  color: var(--gold);
-  border-color: var(--panel-border-strong);
-}
-.reactor-status__dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: currentColor;
-  box-shadow: 0 0 6px currentColor;
-}
-.reactor-hint {
-  margin-top: 20px;
-  font-size: 13px;
-  color: var(--text-dim);
-  font-family: 'Fraunces', Georgia, serif;
-  font-style: italic;
-}
-.reactor-hint__prompts {
-  margin-top: 10px;
-  font-family: 'Inter', sans-serif;
-  font-style: normal;
-  font-size: 11px;
-  color: var(--text-faint);
-  letter-spacing: 0.05em;
-}
-.reactor-hint__prompts span { color: var(--gold); }
 
-/* === RIGHT CONVO === */
-.jarvis__right {
+/* ── Reactor section ── */
+.reactor-section {
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  background: var(--panel);
-  border: 1px solid var(--panel-border);
-  border-radius: 8px;
-  overflow: hidden;
-  min-height: 0;
+  align-items: center;
+  padding-top: 36px;
+  padding-bottom: 16px;
+  width: 100%;
 }
-.jarvis__right::before {
-  content: '';
-  position: absolute; top: 0; left: 0; width: 24px; height: 1px;
-  background: var(--gold);
-  box-shadow: 0 0 6px var(--gold);
+
+.reactor-container {
+  width: clamp(180px, 22vw, 280px);
 }
+
+/* ── Status pill ── */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 13px;
+  padding: 5px 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(245,242,236,0.25);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 999px;
+}
+.status-pill--active {
+  color: #B87333;
+  border-color: rgba(184,115,51,0.22);
+  background: rgba(184,115,51,0.04);
+}
+
+/* ── Empty state hint ── */
+.hint-block {
+  margin-top: 22px;
+  text-align: center;
+  padding: 0 24px;
+}
+.hint-btn {
+  color: rgba(184,115,51,0.45);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  padding: 0;
+  transition: color 150ms;
+}
+.hint-btn:hover { color: #B87333; }
+
+/* ── Conversation ── */
 .convo {
   flex: 1;
   overflow-y: auto;
-  padding: 16px;
+  width: 100%;
+  min-height: 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(184,115,51,0.1) transparent;
+}
+.convo::-webkit-scrollbar { width: 4px; }
+.convo::-webkit-scrollbar-thumb { background: rgba(184,115,51,0.12); border-radius: 2px; }
+.convo::-webkit-scrollbar-track { background: transparent; }
+
+.convo-inner {
+  max-width: 672px; /* matches footer input-bar max-width */
+  margin: 0 auto;
+  padding: 8px 24px 32px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 24px;
 }
-.convo__empty {
-  color: var(--text-faint);
-  font-size: 13px;
-  text-align: center;
-  padding: 32px 16px;
-  font-style: italic;
+
+/* ── Message row ── */
+.msg-row {
+  animation: fade-up 220ms ease-out both;
 }
-.msg { font-size: 13.5px; line-height: 1.55; }
-.msg__head {
-  font-size: 10px;
+
+.msg-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--text-faint);
-  margin-bottom: 4px;
+  color: rgba(245,242,236,0.28);
+  margin-bottom: 7px;
 }
-.msg__rune { color: var(--gold); margin-right: 4px; }
-.msg__body {
-  padding: 10px 12px;
-  border-radius: 8px;
+.msg-label--user { color: rgba(184,115,51,0.75); }
+
+.msg-body {
+  font-size: 14px;
+  line-height: 1.7;
   white-space: pre-wrap;
 }
-.msg--user .msg__head { color: var(--gold-bright); }
-.msg--user .msg__body {
-  background: rgba(201, 166, 74, 0.08);
-  border: 1px solid var(--panel-border);
-  color: var(--text);
+.msg-body--user {
+  padding: 11px 15px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 8px;
+  color: rgba(245,242,236,0.82);
 }
-.msg--assistant .msg__body {
-  background: rgba(255, 255, 255, 0.02);
-  border-left: 2px solid var(--gold);
-  color: var(--text);
+.msg-body--assistant {
+  padding-left: 15px;
+  border-left: 2px solid rgba(184,115,51,0.28);
+  color: rgba(245,242,236,0.68);
 }
-.msg--pending .msg__body { color: var(--text-dim); }
-.msg__body--pending { color: var(--text-dim); font-style: italic; }
 
-.msg__tools {
+/* ── Tool trace ── */
+.tool-list {
   list-style: none;
   padding: 0;
-  margin: 0 0 6px 0;
+  margin: 0 0 8px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
-.msg__tool {
-  font-size: 11px;
-  letter-spacing: 0.02em;
-  color: var(--text-dim);
+.tool-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
   font-family: 'JetBrains Mono', monospace;
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  opacity: 0.7;
+  font-size: 10px;
 }
-.msg__tool--running { color: var(--gold-bright); opacity: 1; }
-.msg__tool--done { opacity: 0.55; }
-.msg__tool-icon { width: 12px; text-align: center; }
-.msg__tool--running .msg__tool-icon {
-  animation: pulse 1s ease-in-out infinite;
+.tool-item--running {
+  color: rgba(184,115,51,0.75);
+  animation: tool-blink 1s ease-in-out infinite;
 }
-@keyframes pulse {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 1; }
-}
-.msg__tool-name { font-weight: 500; }
+.tool-item--done { color: rgba(245,242,236,0.22); }
+.tool-icon { width: 12px; text-align: center; flex-shrink: 0; }
+.tool-name { font-weight: 500; }
 
-/* === FOOTER === */
-.jarvis__footer {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 0 24px 16px;
-  border-top: 1px solid var(--panel-border);
+/* ── Clear button ── */
+.clear-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(245,242,236,0.18);
+  background: none;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 4px;
+  padding: 5px 14px;
+  cursor: pointer;
+  transition: color 150ms, border-color 150ms;
 }
+.clear-btn:hover {
+  color: rgba(245,242,236,0.45);
+  border-color: rgba(255,255,255,0.1);
+}
+
+/* ── Footer ── */
+.footer {
+  flex-shrink: 0;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+/* ── Voice error ── */
 .voice-error {
-  max-width: 600px;
-  width: 100%;
-  margin: 8px auto;
-  padding: 6px 12px;
-  font-size: 11px;
-  color: var(--critred);
-  background: rgba(196, 56, 56, 0.08);
-  border: 1px solid rgba(196, 56, 56, 0.3);
+  max-width: 672px;
+  margin: 10px auto 0;
+  padding: 6px 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: rgba(239,68,68,0.75);
+  background: rgba(239,68,68,0.05);
+  border: 1px solid rgba(239,68,68,0.15);
   border-radius: 6px;
   text-align: center;
 }
-.controls {
-  display: flex; align-items: center; gap: 12px;
-  max-width: 700px;
-  width: 100%;
+
+/* ── Input bar ── */
+.input-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 672px;
+  margin: 0 auto;
+  padding: 14px 24px;
 }
-.ctrl-btn {
-  width: 48px; height: 48px;
-  display: inline-flex; align-items: center; justify-content: center;
-  border: 1px solid var(--panel-border);
-  border-radius: 50%;
-  background: var(--panel);
-  color: var(--text-dim);
+
+/* ── Voice chip ── */
+.voice-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.02);
+  color: rgba(245,242,236,0.22);
   cursor: pointer;
-  transition: all 0.2s;
+  flex-shrink: 0;
+  transition: color 150ms, border-color 150ms, background 150ms;
 }
-.ctrl-btn:hover { color: var(--gold); border-color: var(--panel-border-strong); }
-.ctrl-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-.ctrl-btn__icon { width: 20px; height: 20px; }
-.ctrl-btn--on { color: var(--gold); border-color: var(--panel-border-strong); }
-.ctrl-btn--mic.ctrl-btn--recording {
-  background: var(--critred);
-  color: white;
-  border-color: var(--critred);
-  animation: ctrl-pulse 1.4s ease-in-out infinite;
+.voice-chip:hover {
+  color: rgba(245,242,236,0.5);
+  border-color: rgba(255,255,255,0.12);
 }
-.ctrl-btn--stop {
-  background: var(--critred);
-  color: white;
-  border-color: var(--critred);
-  animation: ctrl-pulse 1.6s ease-in-out infinite;
+.voice-chip--on {
+  color: #B87333;
+  border-color: rgba(184,115,51,0.28);
+  background: rgba(184,115,51,0.06);
 }
-.ctrl-btn--stop:hover {
-  background: #e54545;
-  border-color: #e54545;
-  color: white;
-}
-.ctrl-btn--interrupt {
-  border-color: var(--gold);
-  color: var(--gold);
-}
-.ctrl-btn--send {
-  background: var(--gold);
-  color: #0a0e1a;
-  border-color: var(--gold);
-}
-.ctrl-btn--send:hover { background: var(--gold-bright); color: #0a0e1a; }
-.input-form {
+
+/* ── Input field ── */
+.input-field {
   flex: 1;
-  display: flex; align-items: center; gap: 12px;
-}
-.input-form__field {
-  flex: 1;
-  height: 48px;
-  padding: 0 18px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--panel-border);
-  border-radius: 999px;
-  color: var(--text);
-  font-family: 'Inter', sans-serif;
+  height: 44px;
+  padding: 0 16px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 10px;
+  color: #F5F2EC;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 14px;
   outline: none;
-  transition: border-color 0.2s;
+  transition: border-color 150ms, box-shadow 150ms;
 }
-.input-form__field:focus {
-  border-color: var(--panel-border-strong);
+.input-field::placeholder { color: rgba(245,242,236,0.18); }
+.input-field:focus {
+  border-color: rgba(184,115,51,0.35);
+  box-shadow: 0 0 0 3px rgba(184,115,51,0.06);
 }
-.input-form__field::placeholder { color: var(--text-faint); }
-.input-form__field:disabled { opacity: 0.6; }
+.input-field:disabled { opacity: 0.45; cursor: not-allowed; }
 
-@keyframes ctrl-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(196, 56, 56, 0.5); }
-  50%      { box-shadow: 0 0 0 10px rgba(196, 56, 56, 0); }
+/* ── Control buttons ── */
+.ctrl-btn {
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 50%;
+  background: rgba(255,255,255,0.03);
+  color: rgba(245,242,236,0.38);
+  cursor: pointer;
+  transition: all 150ms;
+}
+.ctrl-btn:hover {
+  color: #B87333;
+  border-color: rgba(184,115,51,0.3);
+  background: rgba(184,115,51,0.05);
 }
 
-/* Custom scrollbars */
-.convo::-webkit-scrollbar,
-.jarvis__left::-webkit-scrollbar { width: 6px; }
-.convo::-webkit-scrollbar-track,
-.jarvis__left::-webkit-scrollbar-track { background: transparent; }
-.convo::-webkit-scrollbar-thumb,
-.jarvis__left::-webkit-scrollbar-thumb {
-  background: rgba(201, 166, 74, 0.15);
-  border-radius: 3px;
+.ctrl-btn--recording {
+  background: rgba(185,28,28,0.2);
+  color: rgba(252,165,165,0.85);
+  border-color: rgba(220,38,38,0.3);
+  animation: record-pulse 1.4s ease-in-out infinite;
 }
 
-/* Responsive — collapse panels on small screens */
-@media (max-width: 1100px) {
-  .jarvis__grid { grid-template-columns: 240px 1fr 320px; }
+.ctrl-btn--stop {
+  background: rgba(185,28,28,0.1);
+  color: rgba(252,165,165,0.7);
+  border-color: rgba(220,38,38,0.2);
 }
-@media (max-width: 900px) {
-  .jarvis__grid { grid-template-columns: 1fr; }
-  .jarvis__left, .jarvis__right { display: none; }
+.ctrl-btn--stop:hover {
+  background: rgba(185,28,28,0.25);
+  border-color: rgba(220,38,38,0.4);
+  color: rgba(252,165,165,1);
+}
+
+.ctrl-btn--send {
+  background: #B87333;
+  color: #0F1B2D;
+  border-color: #B87333;
+}
+.ctrl-btn--send:hover {
+  background: #c98b4f;
+  border-color: #c98b4f;
+  color: #0F1B2D;
+}
+
+/* ── Status strip ── */
+.status-strip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 5px 24px 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: rgba(245,242,236,0.18);
+  letter-spacing: 0.04em;
+}
+.strip-sep {
+  display: inline-block;
+  width: 1px;
+  height: 9px;
+  background: rgba(245,242,236,0.1);
+  border-radius: 1px;
+}
+.strip-refresh {
+  background: none;
+  border: none;
+  color: rgba(245,242,236,0.18);
+  cursor: pointer;
+  transition: color 150ms;
+  padding: 0;
+  font-size: inherit;
+}
+.strip-refresh:hover { color: #B87333; }
+.stale { color: rgba(251,146,60,0.7); }
+
+/* ── Keyframes ── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes tool-blink {
+  0%, 100% { opacity: 0.45; }
+  50%       { opacity: 1; }
+}
+@keyframes record-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(220,38,38,0.2); }
+  50%      { box-shadow: 0 0 0 6px rgba(220,38,38,0); }
+}
+@keyframes dot-pulse {
+  0%, 100% { opacity: 0.65; }
+  50%       { opacity: 1; }
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .header      { padding: 0 16px; }
+  .convo-inner { padding: 8px 16px 24px; }
+  .input-bar   { padding: 10px 16px; }
+  .status-strip { padding: 4px 16px 8px; }
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0ms !important;
+    transition-duration: 0ms !important;
+  }
 }
 </style>

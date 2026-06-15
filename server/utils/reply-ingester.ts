@@ -14,6 +14,8 @@ import Anthropic from '@anthropic-ai/sdk'
 import { ImapFlow } from 'imapflow'
 import { kv } from './kv'
 import { pauseLead } from './sequence-state'
+import { markDoNotContact, normalizeDomain, recordInteraction, upsertLead } from './lead-db'
+import { creditReplyToVariant } from './ab-testing'
 
 interface InboxCred {
   email: string
@@ -147,6 +149,46 @@ export async function pollAllInboxes(): Promise<PollResult> {
           if (cls.classification !== 'ooo' && cls.classification !== 'other') {
             const pauseReason: 'replied' | 'unsubscribed' = cls.classification === 'unsubscribe' ? 'unsubscribed' : 'replied'
             paused = await pauseLead(msg.from, pauseReason)
+          }
+
+          // Credit the A/B variant — figures out which step's subject was
+          // last sent to this address and bumps replied / replied_positive.
+          await creditReplyToVariant({
+            email: msg.from,
+            classification: cls.classification,
+          }).catch(() => { /* best-effort */ })
+
+          // Mirror to lead DB. Replies — even objections — go to DNC so we
+          // don't burn trust with a follow-up after someone explicitly closed
+          // the loop. OOO is the one exception: don't suppress an autoresponder.
+          const replyDomain = normalizeDomain((msg.from.split('@')[1] ?? ''))
+          if (replyDomain) {
+            try {
+              if (cls.classification === 'unsubscribe') {
+                await markDoNotContact(replyDomain, 'unsubscribed')
+              } else if (cls.classification === 'negative') {
+                await markDoNotContact(replyDomain, 'negative')
+              } else if (cls.classification !== 'ooo' && cls.classification !== 'other') {
+                // positive / question / objection — all stop further outbound
+                await markDoNotContact(replyDomain, 'replied')
+              } else {
+                await upsertLead({
+                  domain: replyDomain,
+                  business_name: msg.from_name || replyDomain,
+                  last_reply_at: msg.received_at,
+                })
+              }
+              await recordInteraction(replyDomain, {
+                type: 'reply_received',
+                source: inbox.email,
+                details: {
+                  classification: cls.classification,
+                  intent_signal: cls.intent_signal,
+                  summary: cls.summary,
+                  escalate: cls.escalate,
+                },
+              })
+            } catch { /* best-effort */ }
           }
 
           const pending: PendingReply = {
